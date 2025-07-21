@@ -7,20 +7,20 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Table(name = "tbUsuario")
+@Table(name = "TBUsuario")
 @Getter @Setter @ToString @EqualsAndHashCode
 public class UserEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_usuario")
+    @SequenceGenerator(name = "seq_usuario", sequenceName = "seq_usuario", allocationSize = 1)
     @Column(name = "IDUSUARIO")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_USUARIO")
-    @SequenceGenerator(name = "SEQ_USUARIO", sequenceName = "SEQ_USUARIO", allocationSize = 1)
     private Long id;
 
     @Column(name = "USUARIO")
     private String usuario;
 
-    @Column(name = "CONTRASENA")
+    @Column(name = "CONTRASEÑA")
     private String contrasena;
 
     @Column(name = "NOMBRE")
