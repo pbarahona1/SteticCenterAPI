@@ -19,14 +19,20 @@ import java.util.stream.Collectors;
 @Service
 public class UserService {
 
-    private static final Logger log = LoggerFactory.getLogger(UserService.class);
+
     @Autowired
-    private UserRepository repo;
-    public List<UserDTO> getAllUsers(){
-        List<UserEntity> usuarios = repo.findAll();
-        return usuarios.stream()
-                .map(this::convertirAUsuarioDTO)
-                .collect(Collectors.toList());
+    UserRepository repo;
+
+    public List<UserDTO> getAllUsers() {
+        try {
+            List<UserEntity> usuarios = repo.findAll();
+            return usuarios.stream()
+                    .map(this::convertirAUsuarioDTO)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            log.error("Error al listar usuarios: " + e.getMessage(), e);
+            throw new ExceptionsUsuarioNoEncontrado("Error al listar usuarios: " + e.getMessage());
+        }
     }
 
     public UserDTO insertUser(UserDTO userDto){
@@ -73,7 +79,9 @@ public class UserService {
     }
 
     private UserDTO convertirAUsuarioDTO(UserEntity usuario) {
+
         UserDTO dto = new UserDTO();
+
         dto.setIdUsuario(usuario.getId());
         dto.setUsuario(usuario.getUsuario());
         dto.setContrasena(usuario.getContrasena());
@@ -81,6 +89,7 @@ public class UserService {
         dto.setEdad(usuario.getEdad());
         dto.setCorreo(usuario.getCorreo());
         dto.setDUI(usuario.getDUI());
+
         return dto;
     }
 
@@ -90,7 +99,7 @@ public class UserService {
         usuario.setUsuario(dto.getUsuario());
         usuario.setContrasena(dto.getContrasena());
         usuario.setNombre(dto.getNombre());
-        usuario.setEdad(usuario.getEdad());
+        usuario.setEdad(dto.getEdad());
         usuario.setDUI(dto.getDUI());
         return usuario;
     }

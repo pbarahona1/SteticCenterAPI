@@ -22,7 +22,7 @@ public class UserDTO {
     @NotBlank(message = "El nombre es obligatorio")
     private String nombre;
 
-    @NotBlank(message = "La edad es obligatoria")
+
     private int edad;
 
     @Email(message = "Debe ser un correo valido")

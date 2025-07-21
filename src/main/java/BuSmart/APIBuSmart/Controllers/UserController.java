@@ -21,15 +21,20 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
+
 public class UserController {
 
     @Autowired
     private UserService acceso;
 
-
     @GetMapping("/usuarios")
-    public List<UserDTO> datosUsuarios(){
-        return acceso.getAllUsers();
+    public ResponseEntity<List<UserDTO>> datosUsuarios(){
+        try {
+            List<UserDTO> usuarios = acceso.getAllUsers();
+            return ResponseEntity.ok(usuarios);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @PostMapping("/ingresarUsuario")
