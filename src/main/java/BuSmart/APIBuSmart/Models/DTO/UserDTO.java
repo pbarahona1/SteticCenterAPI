@@ -31,4 +31,7 @@ public class UserDTO {
 
     @NotBlank(message = "El dui debe de ser valido")
     private String DUI;
+
+
+    private String imagen;
 }
