@@ -25,6 +25,7 @@ public class UserDTO {
     @Min(value = 15, message = "La edad mínima debe ser de 15 años")
     private int edad;
 
+    @NotBlank(message = "El correo es obligatorio")
     @Email(message = "Debe ser un correo valido")
     private String correo;
 
