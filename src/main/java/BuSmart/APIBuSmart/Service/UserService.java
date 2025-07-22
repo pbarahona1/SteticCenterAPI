@@ -101,6 +101,7 @@ public class UserService {
         usuario.setNombre(dto.getNombre());
         usuario.setEdad(dto.getEdad());
         usuario.setDUI(dto.getDUI());
+        usuario.setImagen(dto.getImagen());
         return usuario;
     }
 }
