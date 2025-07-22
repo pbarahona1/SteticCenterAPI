@@ -1,7 +1,6 @@
 package BuSmart.APIBuSmart.Models.DTO;
 
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.EqualsAndHashCode;
@@ -23,10 +22,9 @@ public class UserDTO {
     @NotBlank(message = "El nombre es obligatorio")
     private String nombre;
 
-    @Min(value = 15, message = "La edad mínima debe ser de 15 años")
+
     private int edad;
 
-    @NotBlank(message = "El correo es obligatorio")
     @Email(message = "Debe ser un correo valido")
     private String correo;
 
