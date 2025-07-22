@@ -89,7 +89,7 @@ public class UserService {
         dto.setEdad(usuario.getEdad());
         dto.setCorreo(usuario.getCorreo());
         dto.setDUI(usuario.getDUI());
-
+        dto.setImagen(usuario.getImagen());
         return dto;
     }
 
