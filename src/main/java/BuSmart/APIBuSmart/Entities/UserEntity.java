@@ -34,4 +34,7 @@ public class UserEntity {
 
     @Column(name = "DUI")
     private String DUI;
+
+    @Column(name = "URLFoto", columnDefinition = "CLOB")
+    private String imagen;
 }
