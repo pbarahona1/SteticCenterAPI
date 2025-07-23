@@ -38,7 +38,7 @@ public class UserController {
     }
 
     @PostMapping("/ingresarUsuario")
-    public ResponseEntity<Map<String, Object>> registrarUsuario(@Valid @RequestBody UserDTO usuario, HttpServletRequest request){
+    public ResponseEntity<?>registrarUsuario(@Valid @RequestBody UserDTO json, HttpServletRequest request) {
         try {
             //Intento de guardar al usuario
             UserDTO respuesta = acceso.insertUser(usuario);
