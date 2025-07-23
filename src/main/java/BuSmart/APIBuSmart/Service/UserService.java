@@ -4,7 +4,6 @@ import BuSmart.APIBuSmart.Entities.UserEntity;
 import BuSmart.APIBuSmart.Exceptions.ExcepUsuarios.ExceptionsUsuarioNoEncontrado;
 import BuSmart.APIBuSmart.Models.DTO.UserDTO;
 import BuSmart.APIBuSmart.Repositories.UserRepository;
-import de.mkammerer.argon2.Argon2;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
