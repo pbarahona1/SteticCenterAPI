@@ -40,7 +40,7 @@ public class UserService {
             throw new IllegalArgumentException("Usuario o contraseña no pueden ser nulos o vacios");
         }
         try {
-            UserEntity userEntity = convertirAUsuarioEntity(userDto);
+            UserEntity userEntity = convertirAUsuarioEntity(data);
             UserEntity usuarioGuardado = repo.save(userEntity);
             return convertirAUsuarioDTO(usuarioGuardado);
         }catch (Exception e){
