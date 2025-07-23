@@ -60,7 +60,6 @@ public class UserController {
                             "detail", e.getMessage()
                     ));
         }
-
     }
 
     @PutMapping("ModificarUsuario/{id}")
