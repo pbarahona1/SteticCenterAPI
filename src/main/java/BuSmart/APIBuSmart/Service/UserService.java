@@ -4,10 +4,7 @@ import BuSmart.APIBuSmart.Entities.UserEntity;
 import BuSmart.APIBuSmart.Exceptions.ExcepUsuarios.ExceptionsUsuarioNoEncontrado;
 import BuSmart.APIBuSmart.Models.DTO.UserDTO;
 import BuSmart.APIBuSmart.Repositories.UserRepository;
-import de.mkammerer.argon2.Argon2;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -35,12 +32,12 @@ public class UserService {
         }
     }
 
-    public UserDTO insertUser(UserDTO userDto){
-        if (userDto == null || userDto.getContrasena() == null || userDto.getContrasena().isEmpty()){
+    public UserDTO insertUser(UserDTO data){
+        if (data == null || data.getContrasena() == null || data.getContrasena().isEmpty()){
             throw new IllegalArgumentException("Usuario o contraseña no pueden ser nulos o vacios");
         }
         try {
-            UserEntity userEntity = convertirAUsuarioEntity(userDto);
+            UserEntity userEntity = convertirAUsuarioEntity(data);
             UserEntity usuarioGuardado = repo.save(userEntity);
             return convertirAUsuarioDTO(usuarioGuardado);
         }catch (Exception e){
@@ -79,9 +76,7 @@ public class UserService {
     }
 
     private UserDTO convertirAUsuarioDTO(UserEntity usuario) {
-
         UserDTO dto = new UserDTO();
-
         dto.setIdUsuario(usuario.getId());
         dto.setUsuario(usuario.getUsuario());
         dto.setContrasena(usuario.getContrasena());

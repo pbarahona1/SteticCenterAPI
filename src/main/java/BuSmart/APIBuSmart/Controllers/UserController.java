@@ -11,9 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
-import javax.naming.Binding;
-import javax.xml.stream.events.DTD;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
@@ -25,7 +22,7 @@ import java.util.Map;
 public class UserController {
 
     @Autowired
-    private UserService acceso;
+    UserService acceso;
 
     @GetMapping("/usuarios")
     public ResponseEntity<List<UserDTO>> datosUsuarios(){
@@ -38,10 +35,10 @@ public class UserController {
     }
 
     @PostMapping("/ingresarUsuario")
-    public ResponseEntity<Map<String, Object>> registrarUsuario(@Valid @RequestBody UserDTO usuario, HttpServletRequest request){
+    public ResponseEntity<?>registrarUsuario(@Valid @RequestBody UserDTO json, HttpServletRequest request) {
         try {
             //Intento de guardar al usuario
-            UserDTO respuesta = acceso.insertUser(usuario);
+            UserDTO respuesta = acceso.insertUser(json);
             if (respuesta == null) {
                 return ResponseEntity.badRequest().body(Map.of(
                         "status", "Inserción incorrecta",
@@ -50,9 +47,9 @@ public class UserController {
                 ));
             }
             return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
-                    "status","succes",
+                    "status", "succes",
                     "data", respuesta));
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of(
                             "status", "error",
@@ -60,7 +57,6 @@ public class UserController {
                             "detail", e.getMessage()
                     ));
         }
-
     }
 
     @PutMapping("ModificarUsuario/{id}")
