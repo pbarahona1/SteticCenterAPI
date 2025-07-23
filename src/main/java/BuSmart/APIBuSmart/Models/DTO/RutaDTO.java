@@ -9,16 +9,17 @@ import lombok.ToString;
 @Getter @Setter @ToString @EqualsAndHashCode
 public class RutaDTO {
 
-    private Long idRuta;
+    @NotBlank
+    private Long idruta;
 
     @NotBlank
-    private String NombreRuta;
+    private String RutaNombre;
 
     @NotBlank
     private int Precio;
 
     @NotBlank
-    private String InfoRuta;
+    private String InfoRutas;
 
     @NotBlank
     private String RutaImagen;

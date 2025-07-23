@@ -13,12 +13,12 @@ public class RutaEntity {
 
     @Id
     @Column(name ="IDRUTA")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_Ruta")
-    @SequenceGenerator(name = "seq_Ruta", sequenceName = "seq_Ruta", allocationSize = 1)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_RUTA")
+    @SequenceGenerator(name = "SEQ_RUTA", sequenceName = "SEQ_RUTA", allocationSize = 1)
+    private Long idruta;
 
     @Column(name ="RUTANOMBRE")
-    private String NombreRuta;
+    private String RutaNombre;
 
     @Column(name ="PRECIO")
     private int Precio;
