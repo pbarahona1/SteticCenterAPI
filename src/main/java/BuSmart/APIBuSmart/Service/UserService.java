@@ -77,7 +77,6 @@ public class UserService {
 
     private UserDTO convertirAUsuarioDTO(UserEntity usuario) {
         UserDTO dto = new UserDTO();
-
         dto.setIdUsuario(usuario.getId());
         dto.setUsuario(usuario.getUsuario());
         dto.setContrasena(usuario.getContrasena());
