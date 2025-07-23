@@ -35,8 +35,8 @@ public class UserService {
         }
     }
 
-    public UserDTO insertUser(UserDTO userDto){
-        if (userDto == null || userDto.getContrasena() == null || userDto.getContrasena().isEmpty()){
+    public UserDTO insertUser(UserDTO data){
+        if (data == null || data.getContrasena() == null || data.getContrasena().isEmpty()){
             throw new IllegalArgumentException("Usuario o contraseña no pueden ser nulos o vacios");
         }
         try {
