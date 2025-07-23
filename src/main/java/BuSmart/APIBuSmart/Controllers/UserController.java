@@ -41,7 +41,7 @@ public class UserController {
     public ResponseEntity<?>registrarUsuario(@Valid @RequestBody UserDTO json, HttpServletRequest request) {
         try {
             //Intento de guardar al usuario
-            UserDTO respuesta = acceso.insertUser(usuario);
+            UserDTO respuesta = acceso.insertUser(json);
             if (respuesta == null) {
                 return ResponseEntity.badRequest().body(Map.of(
                         "status", "Inserción incorrecta",
