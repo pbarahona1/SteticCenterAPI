@@ -25,7 +25,7 @@ import java.util.Map;
 public class UserController {
 
     @Autowired
-    private UserService acceso;
+    UserService acceso;
 
     @GetMapping("/usuarios")
     public ResponseEntity<List<UserDTO>> datosUsuarios(){
