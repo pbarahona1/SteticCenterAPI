@@ -29,7 +29,6 @@ public class TipoEncargadoService {
 
     }
 
-    //1.Se declara el metodo convertirADTO el cual recibira el entity y recibira un dto
     private TipoEncargadoDTO convertirADTO(TipoEncargadoEntity tipoEncargadoEntity) {
         //Creando objeto a retornar
         TipoEncargadoDTO dto = new TipoEncargadoDTO();
