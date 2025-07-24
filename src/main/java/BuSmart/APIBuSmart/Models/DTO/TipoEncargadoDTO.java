@@ -13,5 +13,5 @@ public class TipoEncargadoDTO {
     private Long IdTipoEncargado;
 
     @NotBlank(message = "El tipo de encargado es obligatorio")
-    private String TipoEncargado;
+    private String TipoFamiliar;
 }

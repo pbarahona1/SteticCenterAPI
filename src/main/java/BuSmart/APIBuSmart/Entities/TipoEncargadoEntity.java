@@ -15,7 +15,7 @@ public class TipoEncargadoEntity {
     @Column(name ="IDTIPOENCARGADO")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_TIPOENCARGADO")
     @SequenceGenerator(name = "SEQ_TIPOENCARGADO", sequenceName = "SEQ_TIPOENCARGADO", allocationSize = 1)
-    private Long idruta;
+    private Long IdTipoEncargado;
 
     @Column(name = "TIPOFAMILIAR")
     private String TipoFamiliar;
