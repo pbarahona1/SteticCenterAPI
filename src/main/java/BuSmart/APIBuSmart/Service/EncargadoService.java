@@ -1,6 +1,8 @@
 package BuSmart.APIBuSmart.Service;
 
 import BuSmart.APIBuSmart.Entities.EncargadoEntity;
+import BuSmart.APIBuSmart.Entities.UserEntity;
+import BuSmart.APIBuSmart.Exceptions.ExcepUsuarios.ExceptionEncargadoNoEncontrado;
 import BuSmart.APIBuSmart.Exceptions.ExcepUsuarios.ExceptionEncargadoNoRegistrado;
 import BuSmart.APIBuSmart.Exceptions.ExcepUsuarios.ExceptionsUsuarioNoEncontrado;
 import BuSmart.APIBuSmart.Models.DTO.EncargadoDTO;
@@ -30,11 +32,12 @@ public class EncargadoService {
 
     private EncargadoDTO ConvertirADTO(EncargadoEntity encargadoEntity) {
         EncargadoDTO dto = new EncargadoDTO();
-        dto.setIdEncargado(encargadoEntity.getIdEncargado() );
+        dto.setIdEncargado(encargadoEntity.getIdEncargado());
         dto.setNombre(encargadoEntity.getNombre());
+        dto.setNumero(encargadoEntity.getNumero());
         dto.setEdad(encargadoEntity.getEdad());
         dto.setDUI(encargadoEntity.getDUI());
-        dto.setDUI(encargadoEntity.getDUI());
+        dto.setCorreo(encargadoEntity.getCorreo());
         dto.setIdUsuario(encargadoEntity.getIdUsuario());
         dto.setIdTipoEncargado(encargadoEntity.getIdTipoEncargado());
         return dto;
@@ -59,21 +62,22 @@ public class EncargadoService {
         EncargadoEntity entity = new EncargadoEntity();
         entity.setIdEncargado(json.getIdEncargado() );
         entity.setNombre(json.getNombre());
+        entity.setNumero(json.getNumero());
         entity.setEdad(json.getEdad());
         entity.setDUI(json.getDUI());
-        entity.setDUI(json.getDUI());
+        entity.setCorreo(json.getCorreo());
         entity.setIdUsuario(json.getIdUsuario());
         entity.setIdTipoEncargado(json.getIdTipoEncargado());
         return entity;
     }
 
-    public EncargadoDTO actualizarEncargado(Long id, @Valid EncargadoDTO json){
-        EncargadoEntity EncargadoExiste = repoEncargado.findById(id).orElseThrow(() ->new ExceptionsUsuarioNoEncontrado("Usuario no encontrado"));
-        EncargadoExiste.setIdEncargado(json.getIdEncargado() );
+            public EncargadoDTO actualizarEncargado(Long id, @Valid EncargadoDTO json){
+        EncargadoEntity EncargadoExiste = repoEncargado.findById(id).orElseThrow(() ->new ExceptionEncargadoNoEncontrado("Encargado no encontrado"));
         EncargadoExiste.setNombre(json.getNombre());
+        EncargadoExiste.setNumero(json.getNumero());
         EncargadoExiste.setEdad(json.getEdad());
         EncargadoExiste.setDUI(json.getDUI());
-        EncargadoExiste.setDUI(json.getDUI());
+        EncargadoExiste.setCorreo(json.getCorreo());
         EncargadoExiste.setIdUsuario(json.getIdUsuario());
         EncargadoExiste.setIdTipoEncargado(json.getIdTipoEncargado());
         EncargadoEntity encargadoActualizado = repoEncargado.save(EncargadoExiste);
@@ -82,16 +86,16 @@ public class EncargadoService {
 
     public boolean removerEncargado(long id) {
         try{
-            EncargadoEntity encargadoExiste = repoEncargado.findById(id).orElse(null);
-            if (encargadoExiste != null){
+            EncargadoEntity objUsuario = repoEncargado.findById(id).orElse(null);
+            if (objUsuario != null){
                 repoEncargado.deleteById(id);
                 return true;
-            }else {
+            }else{
+                System.out.println("Encargado no encontrado.");
                 return false;
             }
         }catch (EmptyResultDataAccessException e){
-            throw new EmptyResultDataAccessException("No se encontro el Usuario con ID" + id + "para eliminar", 1);
-
+            throw new EmptyResultDataAccessException("No se encontro Encargado con ID: " + id + " para eliminar.", 1);
         }
     }
 }

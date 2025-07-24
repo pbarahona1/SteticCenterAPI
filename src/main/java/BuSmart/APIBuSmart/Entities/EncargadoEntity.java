@@ -7,9 +7,10 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Table(name = "tbEncargado")
+@Table(name = "ENCARGADO")
 @Getter @Setter @ToString @EqualsAndHashCode
 public class EncargadoEntity {
+
     @Id
     @Column(name = "IDENCARGADO")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_ENCARGADO")
@@ -19,13 +20,16 @@ public class EncargadoEntity {
     @Column(name = "NOMBRE")
     private String Nombre;
 
+    @Column(name = "NUMERO")
+    private String Numero;
+
     @Column(name = "EDAD")
     private int Edad;
 
     @Column(name = "DUI")
     private String DUI;
 
-    @Column(name = "CORREO_ELECTRONICA")
+    @Column(name = "CORREOELECTRONICO")
     private String Correo;
 
     @Column(name = "IDUSUARIO")

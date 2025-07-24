@@ -16,6 +16,9 @@ public class EncargadoDTO {
     @NotBlank(message = "El nombre es obligatorio")
     private String Nombre;
 
+    @NotNull(message = "El Numero es obligatoria")
+    private String Numero;
+
     @Min(value = 18, message = "La edad mínima debe ser de 18 años")
     private int Edad;
 
