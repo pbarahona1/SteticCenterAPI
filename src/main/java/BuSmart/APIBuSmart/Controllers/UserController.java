@@ -98,7 +98,7 @@ public class UserController {
         catch (Exception e){
             return ResponseEntity.internalServerError().body(Map.of(
                 "status", "Error",
-                    "message", "Error al eliminar usuario",
+                    "message", "Error al eliminar Encargado",
                     "detail", e.getMessage()
             ));
         }
