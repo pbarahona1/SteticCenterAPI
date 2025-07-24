@@ -1,0 +1,97 @@
+package BuSmart.APIBuSmart.Service;
+
+import BuSmart.APIBuSmart.Entities.EncargadoEntity;
+import BuSmart.APIBuSmart.Exceptions.ExcepUsuarios.ExceptionEncargadoNoRegistrado;
+import BuSmart.APIBuSmart.Exceptions.ExcepUsuarios.ExceptionsUsuarioNoEncontrado;
+import BuSmart.APIBuSmart.Models.DTO.EncargadoDTO;
+import BuSmart.APIBuSmart.Repositories.EncargadoRepository;
+import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Slf4j
+@Service
+public class EncargadoService {
+
+    @Autowired
+    EncargadoRepository repoEncargado;
+
+    public List<EncargadoDTO> obtenerEncargados() {
+        List<EncargadoEntity> lista = repoEncargado.findAll();
+        return lista.stream()
+                .map(this::ConvertirADTO)
+                .collect(Collectors.toList());
+    }
+
+    private EncargadoDTO ConvertirADTO(EncargadoEntity encargadoEntity) {
+        EncargadoDTO dto = new EncargadoDTO();
+        dto.setIdEncargado(encargadoEntity.getIdEncargado() );
+        dto.setNombre(encargadoEntity.getNombre());
+        dto.setEdad(encargadoEntity.getEdad());
+        dto.setDUI(encargadoEntity.getDUI());
+        dto.setDUI(encargadoEntity.getDUI());
+        dto.setIdUsuario(encargadoEntity.getIdUsuario());
+        dto.setIdTipoEncargado(encargadoEntity.getIdTipoEncargado());
+        return dto;
+    }
+
+    public EncargadoDTO insertarEncargado(@Valid EncargadoDTO json) {
+        if (json == null){
+            throw new IllegalArgumentException("Encargado no puede ser nulo");
+        }
+
+        try{
+            EncargadoEntity entity = ConvertirAEntity(json);
+            EncargadoEntity respuesta = repoEncargado.save(entity);
+            return ConvertirADTO(respuesta);
+        }catch (Exception e){
+            log.error("error al registrar encargado" + e.getMessage());
+            throw new ExceptionEncargadoNoRegistrado("error al registrar encargado");
+        }
+    }
+
+    private EncargadoEntity ConvertirAEntity(@Valid EncargadoDTO json) {
+        EncargadoEntity entity = new EncargadoEntity();
+        entity.setIdEncargado(json.getIdEncargado() );
+        entity.setNombre(json.getNombre());
+        entity.setEdad(json.getEdad());
+        entity.setDUI(json.getDUI());
+        entity.setDUI(json.getDUI());
+        entity.setIdUsuario(json.getIdUsuario());
+        entity.setIdTipoEncargado(json.getIdTipoEncargado());
+        return entity;
+    }
+
+    public EncargadoDTO actualizarEncargado(Long id, @Valid EncargadoDTO json){
+        EncargadoEntity EncargadoExiste = repoEncargado.findById(id).orElseThrow(() ->new ExceptionsUsuarioNoEncontrado("Usuario no encontrado"));
+        EncargadoExiste.setIdEncargado(json.getIdEncargado() );
+        EncargadoExiste.setNombre(json.getNombre());
+        EncargadoExiste.setEdad(json.getEdad());
+        EncargadoExiste.setDUI(json.getDUI());
+        EncargadoExiste.setDUI(json.getDUI());
+        EncargadoExiste.setIdUsuario(json.getIdUsuario());
+        EncargadoExiste.setIdTipoEncargado(json.getIdTipoEncargado());
+        EncargadoEntity encargadoActualizado = repoEncargado.save(EncargadoExiste);
+        return ConvertirADTO(encargadoActualizado);
+    }
+
+    public boolean removerEncargado(long id) {
+        try{
+            EncargadoEntity encargadoExiste = repoEncargado.findById(id).orElse(null);
+            if (encargadoExiste != null){
+                repoEncargado.deleteById(id);
+                return true;
+            }else {
+                return false;
+            }
+        }catch (EmptyResultDataAccessException e){
+            throw new EmptyResultDataAccessException("No se encontro el Usuario con ID" + id + "para eliminar", 1);
+
+        }
+    }
+}
