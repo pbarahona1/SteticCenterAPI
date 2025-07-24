@@ -1,29 +1,33 @@
 package BuSmart.APIBuSmart.Models.DTO;
 
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-@Getter @Setter @ToString @EqualsAndHashCode
+import java.math.BigDecimal;
+
+@ToString @EqualsAndHashCode
+@Getter @Setter
 public class RutaDTO {
 
-    private Long idRuta;
+    private Long idruta;
 
-    @NotBlank
-    private String NombreRuta;
+    @NotBlank(message = "El nombre de la ruta es obligatorio")
+    private String rutaNombre;
 
-    @NotBlank
-    private int Precio;
+    @DecimalMin(value = "0.01", message = "El precio debe ser mayor a 0")
+    private BigDecimal precio;
 
-    @NotBlank
-    private String InfoRuta;
+    @NotBlank(message = "La información de la ruta es obligatoria")
+    private String infoRutas;
 
-    @NotBlank
-    private String RutaImagen;
+    @NotBlank(message = "La imagen de la ruta es obligatoria")
+    private String rutaImagen;
 
-    @NotBlank
-    private  String URLRuta;
+    @NotBlank(message = "La URL de la ruta es obligatoria")
+    private String urlRuta;
 
 }

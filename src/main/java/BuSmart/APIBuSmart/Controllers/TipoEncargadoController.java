@@ -3,7 +3,9 @@ package BuSmart.APIBuSmart.Controllers;
 import BuSmart.APIBuSmart.Exceptions.ExcepUsuarios.ExcepcionDatosDuplicados;
 import BuSmart.APIBuSmart.Exceptions.ExcepUsuarios.ExceptionRutaNoEncontrada;
 import BuSmart.APIBuSmart.Models.DTO.RutaDTO;
+import BuSmart.APIBuSmart.Models.DTO.TipoEncargadoDTO;
 import BuSmart.APIBuSmart.Service.RutaService;
+import BuSmart.APIBuSmart.Service.TipoEncargadoService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,25 +20,25 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/apiRuta")
-public class RutaController {
+@RequestMapping("/apiTipoEncargado")
+public class TipoEncargadoController {
 
     @Autowired
-    RutaService service;
+    TipoEncargadoService TService;
 
-    @GetMapping("/ConsultarRutas")
-    public List<RutaDTO> obtenerDatos(){return  service.obtenerRutas();}
+    @GetMapping("/ConsultarTipoEncargado")
+    public List<TipoEncargadoDTO> obtenerDatos(){return  TService.obtenerTipoEncargado();}
 
 
-    @PostMapping("/RegistrarRutas")
-    public ResponseEntity<?> nuevoUsuario(@Valid @RequestBody RutaDTO json, HttpServletRequest request){
+    @PostMapping("/RegistrarTipoEncargado")
+    public ResponseEntity<?> nuevoTipoEncargado(@Valid @RequestBody TipoEncargadoDTO json, HttpServletRequest request){
         try{
-            RutaDTO respuesta = service.InsertarRutas(json);
+            TipoEncargadoDTO respuesta = TService.InsertarTipoEncargado(json);
             if (respuesta == null){
                 return ResponseEntity.badRequest().body(Map.of(
                         "status", "Inserccion fallida",
                         "errorType", "VALIDACION_ERROR",
-                        "message", "Las rutas no pudieron ser registrados"
+                        "message", "el tipo de encargado no pudo ser registrados"
                 ));
             }
             return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
@@ -47,17 +49,17 @@ public class RutaController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of(
                             "status", "Error",
-                            "message", "Error no controlado al regitrar usuario",
+                            "message", "Error no controlado al regitrar el tipo de encargado",
                             "detail", e.getMessage()
                     ));
         }
 
     }
 
-    @PutMapping("/EditarRuta/{id}")
-    public ResponseEntity<?> modificarRuta(
+    @PutMapping("/EditarTipoEncargado{id}")
+    public ResponseEntity<?> modificarTipoEncargado(
             @PathVariable Long id,
-            @Valid @RequestBody RutaDTO json,
+            @Valid @RequestBody TipoEncargadoDTO json,
             BindingResult bindingResult
     ){
         if (bindingResult.hasErrors()){
@@ -67,7 +69,7 @@ public class RutaController {
             return ResponseEntity.badRequest().body(errores);
         }
         try{
-            RutaDTO dto = service.ActualizarRuta(id, json);
+            TipoEncargadoDTO dto = TService.ActualizarTipoDeEncargado(id, json);
             return ResponseEntity.ok(dto);
         }catch (ExceptionRutaNoEncontrada e){
             return ResponseEntity.notFound().build();
@@ -80,28 +82,28 @@ public class RutaController {
     }
 
 
-    @DeleteMapping("/EliminarRutas/{id}")
-    public  ResponseEntity<?> EliminarRuta(
+    @DeleteMapping("/EliminarTipoEncargado/{id}")
+    public  ResponseEntity<?> EliminarTipoEncargado(
             @PathVariable Long id)
     {
         try{
-            if (!service.QuitarRuta(id)){
+            if (!TService.EliminarTipoEncargado(id)){
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .header("Mensaje de error", "Ruta no Encontrada")
+                        .header("Mensaje de error", "Tipo Encargado no Encontrada")
                         .body(Map.of(
                                 "Error", "NOT FOUND",
-                                "Mensaje", "La ruta no fue encontrada",
+                                "Mensaje", "El Ti poEncargado no fue encontrada",
                                 "timestamp", Instant.now().toString()
                         ));
             }
             return ResponseEntity.ok().body(Map.of(
                     "status", "Proceso completado",
-                    "message", "Ruta eliminada exitosamente"
+                    "message", "Tipo Encargado eliminada exitosamente"
             ));
         }catch (Exception e){
             return ResponseEntity.internalServerError().body(Map.of(
                     "status", "Error",
-                    "message", "Error al eliminar la ruta",
+                    "message", "Error al eliminar el TipoEncargado",
                     "detail", e.getMessage()
             ));
         }

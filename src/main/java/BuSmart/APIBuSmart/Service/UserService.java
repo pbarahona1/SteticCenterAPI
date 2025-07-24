@@ -4,6 +4,7 @@ import BuSmart.APIBuSmart.Entities.UserEntity;
 import BuSmart.APIBuSmart.Exceptions.ExcepUsuarios.ExceptionsUsuarioNoEncontrado;
 import BuSmart.APIBuSmart.Models.DTO.UserDTO;
 import BuSmart.APIBuSmart.Repositories.UserRepository;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -32,8 +33,9 @@ public class UserService {
         }
     }
 
-    public UserDTO insertUser(UserDTO data){
-        if (data == null || data.getContrasena() == null || data.getContrasena().isEmpty()){
+    public UserDTO insertUser(@Valid UserDTO data){
+        if (data == null || data.getContrasena() == null || data.getContrasena().isEmpty())
+        {
             throw new IllegalArgumentException("Usuario o contraseña no pueden ser nulos o vacios");
         }
         try {
@@ -48,13 +50,13 @@ public class UserService {
 
     public UserDTO actualizarUsuario(Long id, UserDTO usuario){
         UserEntity usuarioExistente = repo.findById(id).orElseThrow(() -> new ExceptionsUsuarioNoEncontrado("Usuario no encontrado"));
-        usuarioExistente.setId(usuario.getIdUsuario());
         usuarioExistente.setUsuario(usuario.getUsuario());
         usuarioExistente.setContrasena(usuario.getContrasena());
         usuarioExistente.setNombre(usuario.getNombre());
         usuarioExistente.setEdad(usuario.getEdad());
         usuarioExistente.setCorreo(usuario.getCorreo());
         usuarioExistente.setDUI(usuario.getDUI());
+        usuarioExistente.setImagen(usuario.getImagen());
 
         UserEntity usuarioActualizado = repo.save(usuarioExistente);
         return convertirAUsuarioDTO(usuarioActualizado);
@@ -77,7 +79,7 @@ public class UserService {
 
     private UserDTO convertirAUsuarioDTO(UserEntity usuario) {
         UserDTO dto = new UserDTO();
-        dto.setIdUsuario(usuario.getId());
+        dto.setIdUsuario(usuario.getIdUsuario());
         dto.setUsuario(usuario.getUsuario());
         dto.setContrasena(usuario.getContrasena());
         dto.setNombre(usuario.getNombre());
@@ -90,11 +92,12 @@ public class UserService {
 
     private UserEntity convertirAUsuarioEntity(UserDTO dto){
         UserEntity usuario= new UserEntity();
-        usuario.setId(dto.getIdUsuario());
+        usuario.setIdUsuario(dto.getIdUsuario());
         usuario.setUsuario(dto.getUsuario());
         usuario.setContrasena(dto.getContrasena());
         usuario.setNombre(dto.getNombre());
         usuario.setEdad(dto.getEdad());
+        usuario.setCorreo(dto.getCorreo());
         usuario.setDUI(dto.getDUI());
         usuario.setImagen(dto.getImagen());
         return usuario;

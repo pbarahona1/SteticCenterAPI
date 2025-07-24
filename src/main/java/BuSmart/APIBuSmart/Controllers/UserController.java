@@ -2,6 +2,7 @@ package BuSmart.APIBuSmart.Controllers;
 
 import BuSmart.APIBuSmart.Exceptions.ExcepUsuarios.ExcepcionDatosDuplicados;
 import BuSmart.APIBuSmart.Exceptions.ExcepUsuarios.ExceptionsUsuarioNoEncontrado;
+import BuSmart.APIBuSmart.Models.DTO.RutaDTO;
 import BuSmart.APIBuSmart.Models.DTO.UserDTO;
 import BuSmart.APIBuSmart.Service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,14 +26,7 @@ public class UserController {
     UserService acceso;
 
     @GetMapping("/usuarios")
-    public ResponseEntity<List<UserDTO>> datosUsuarios(){
-        try {
-            List<UserDTO> usuarios = acceso.getAllUsers();
-            return ResponseEntity.ok(usuarios);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
+    public List<UserDTO> datosUsuarios() {return  acceso.getAllUsers();}
 
     @PostMapping("/ingresarUsuario")
     public ResponseEntity<?>registrarUsuario(@Valid @RequestBody UserDTO json, HttpServletRequest request) {
@@ -64,23 +58,19 @@ public class UserController {
             @PathVariable Long id,
             @Valid @RequestBody UserDTO usuario,
             BindingResult bindingResult){
-
         if (bindingResult.hasErrors()){
             Map<String, String> errores = new HashMap<>();
             bindingResult.getFieldErrors().forEach(error ->
                     errores.put(error.getField(), error.getDefaultMessage()));
             return ResponseEntity.badRequest().body(errores);
         }
-
         try {
             UserDTO usuarioActualizado = acceso.actualizarUsuario(id, usuario);
             return ResponseEntity.ok(usuarioActualizado);
         }
-
         catch (ExceptionsUsuarioNoEncontrado e){
             return ResponseEntity.notFound().build();
         }
-
         catch (ExcepcionDatosDuplicados e){
             return ResponseEntity.status(HttpStatus.CONFLICT).body(
                     Map.of("error", "Datos duplicados", "campo", e.getCampoDuplicado())
