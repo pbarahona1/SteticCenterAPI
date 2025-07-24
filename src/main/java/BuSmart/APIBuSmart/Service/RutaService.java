@@ -7,10 +7,12 @@ import BuSmart.APIBuSmart.Exceptions.ExcepUsuarios.ExceptionsUsuarioNoEncontrado
 import BuSmart.APIBuSmart.Models.DTO.RutaDTO;
 import BuSmart.APIBuSmart.Models.DTO.UserDTO;
 import BuSmart.APIBuSmart.Repositories.RutaRepository;
+import jakarta.annotation.PostConstruct;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -39,7 +41,10 @@ public class RutaService {
             log.error("Error al registrar Ruta: " + e.getMessage());
             throw new ExceptionRutaNoEncontrada("Error al registar el.");
         }
+
+
     }
+
 
 
     private RutaDTO ConvertirADTO(RutaEntity rutaEntity) {
@@ -49,30 +54,28 @@ public class RutaService {
         dto.setPrecio(rutaEntity.getPrecio());
         dto.setInfoRutas(rutaEntity.getInfoRutas());
         dto.setRutaImagen(rutaEntity.getRutaImagen());
-        dto.setURLRuta(rutaEntity.getURLRuta());
+        dto.setUrlRuta(rutaEntity.getUrlRuta());
         return dto;
     }
 
 
     private RutaEntity ConvertirAEntity(RutaDTO data) {
         RutaEntity entity = new RutaEntity();
-        entity.setIdruta(data.getIdruta());
         entity.setRutaNombre(data.getRutaNombre());
         entity.setPrecio(data.getPrecio());
         entity.setInfoRutas(data.getInfoRutas());
         entity.setRutaImagen(data.getRutaImagen());
-        entity.setURLRuta(data.getURLRuta());
+        entity.setUrlRuta(data.getUrlRuta());
         return entity;
     }
 
-    public RutaDTO ActualizarRuta(Long id, @Valid RutaDTO json) {
+    public RutaDTO ActualizarRuta(Long id, RutaDTO json) {
         RutaEntity rutaExistente = repo.findById(id).orElseThrow(() -> new ExceptionRutaNoEncontrada("Ruta no encontrada"));
-        rutaExistente.setIdruta(json.getIdruta());
         rutaExistente.setRutaNombre(json.getRutaNombre());
         rutaExistente.setPrecio(json.getPrecio());
         rutaExistente.setInfoRutas(json.getInfoRutas());
         rutaExistente.setRutaImagen(json.getRutaImagen());
-        rutaExistente.setURLRuta(json.getURLRuta());
+        rutaExistente.setUrlRuta(json.getUrlRuta());
 
         RutaEntity RutaActualizada = repo.save(rutaExistente);
         return ConvertirADTO(RutaActualizada);

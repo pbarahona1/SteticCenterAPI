@@ -27,6 +27,7 @@ public class RutaController {
     @GetMapping("/ConsultarRutas")
     public List<RutaDTO> obtenerDatos(){return  service.obtenerRutas();}
 
+
     @PostMapping("/RegistrarRutas")
     public ResponseEntity<?> nuevoUsuario(@Valid @RequestBody RutaDTO json, HttpServletRequest request){
         try{
