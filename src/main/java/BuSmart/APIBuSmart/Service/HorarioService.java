@@ -1,12 +1,9 @@
 package BuSmart.APIBuSmart.Service;
 
 import BuSmart.APIBuSmart.Entities.EstadoEntity;
-import BuSmart.APIBuSmart.Entities.RutaEntity;
 import BuSmart.APIBuSmart.Exceptions.ExcepUsuarios.ExceptionRutaNoEncontrada;
 import BuSmart.APIBuSmart.Models.DTO.EstadoDTO;
-import BuSmart.APIBuSmart.Models.DTO.RutaDTO;
 import BuSmart.APIBuSmart.Repositories.EstadoRepository;
-import BuSmart.APIBuSmart.Repositories.RutaRepository;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

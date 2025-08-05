@@ -3,9 +3,7 @@ package BuSmart.APIBuSmart.Controllers;
 import BuSmart.APIBuSmart.Exceptions.ExcepUsuarios.ExcepcionDatosDuplicados;
 import BuSmart.APIBuSmart.Exceptions.ExcepUsuarios.ExceptionRutaNoEncontrada;
 import BuSmart.APIBuSmart.Models.DTO.EstadoDTO;
-import BuSmart.APIBuSmart.Models.DTO.RutaDTO;
-import BuSmart.APIBuSmart.Service.EstadoService;
-import BuSmart.APIBuSmart.Service.RutaService;
+import BuSmart.APIBuSmart.Service.HorarioService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +22,7 @@ import java.util.Map;
 public class EstadoController {
 
     @Autowired
-    EstadoService service;
+    HorarioService service;
 
     @GetMapping("/ConsultarEstado")
     public List<EstadoDTO> obtenerDatos(){return  service.obtenerEstado();}
