@@ -1,38 +1,50 @@
 package BuSmart.APIBuSmart.Models.DTO;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+
+import java.util.Date;
 
 @ToString @EqualsAndHashCode
 @Getter @Setter
 public class UserDTO {
     private Long idUsuario;
 
-    @NotBlank(message = "El usuario es obligatorio")
-    private String usuario;
-
-    @Size(min = 8, message = "La contraseña debe de ser de minimo de 8 caracteres")
-    private String contrasena;
-
+    @Size(max = 100, message = "El nombre no debe superar los 100 caracteres")
     @NotBlank(message = "El nombre es obligatorio")
     private String nombre;
 
-    @Min(value = 15, message = "La edad mínima debe ser de 15 años")
-    private int edad;
+    @NotBlank(message = "El nombre es obligatorio")
+    private String apellido;
 
     @NotBlank(message = "El correo es obligatorio")
     @Email(message = "Debe ser un correo valido")
     private String correo;
 
+    //se usa para validar el formato del DUI(Ocho dígitos numéricos (del 0 al 9))
+    @Pattern(regexp = "^\\d{8}-\\d$", message = "El formato del DUI debe ser ########-#")
     @NotBlank(message = "El dui debe de ser valido")
-    private String DUI;
+    private String dui;
 
+    @NotNull(message = "El tipo de usuario debe de ser valido")
+    private int idTipoUsuario;
 
-    private String imagen;
+    @Size(max = 30, message = "El usuario no debe superar los 50 caracteres")
+    @NotBlank(message = "El usuario es obligatorio")
+    private String usuario ;
+
+    @NotBlank(message = "La contraseña es obligatoria")
+    @Size(min = 8, max = 20, message = "La contraseña debe tener entre 8 y 50 caracteres")
+    private String contrasena;
+
+    @Past(message = "La fecha de nacimiento debe ser en el pasado")
+    @NotNull(message = "El nacimiento es obligatorio")
+    private Date nacimiento;
+
+    @NotBlank(message = "La direccion es obligatorio")
+    private String direccion;
+
 }

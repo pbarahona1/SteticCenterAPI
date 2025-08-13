@@ -6,20 +6,18 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.math.BigDecimal;
-
 @Entity
-@Table(name = "TBESTADO")
+@Table(name = "HORARIO")
 @Getter @Setter @ToString @EqualsAndHashCode
-public class EstadoEntity {
+public class HorarioEntity {
 
     @Id
-    @Column(name ="IDESTADO")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_ESTADO")
-    @SequenceGenerator(name = "SEQ_ESTADO", sequenceName = "SEQ_ESTADO", allocationSize = 1)
-    private Long idEstado;
+    @Column(name ="IDHORARIO")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_HORARIO")
+    @SequenceGenerator(name = "SEQ_HORARIO", sequenceName = "SEQ_HORARIO", allocationSize = 1)
+    private Long idHorario;
 
-    @Column(name ="TIPOESTADO")
-    private String TipoEstado;
+    @Column(name ="DESCRIPCION")
+    private String descripcion;
 
 }

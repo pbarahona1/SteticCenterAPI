@@ -1,12 +1,12 @@
 package BuSmart.APIBuSmart.Service;
 
-import BuSmart.APIBuSmart.Entities.EncargadoEntity;
-import BuSmart.APIBuSmart.Entities.UserEntity;
+import BuSmart.APIBuSmart.Entities.CitasEntity;
+import BuSmart.APIBuSmart.Exceptions.ExcepCitas.ExcepcionCitasDuplicadas;
+import BuSmart.APIBuSmart.Exceptions.ExcepCitas.ExceptionCitaNoEncontrada;
 import BuSmart.APIBuSmart.Exceptions.ExcepUsuarios.ExceptionEncargadoNoEncontrado;
 import BuSmart.APIBuSmart.Exceptions.ExcepUsuarios.ExceptionEncargadoNoRegistrado;
-import BuSmart.APIBuSmart.Exceptions.ExcepUsuarios.ExceptionsUsuarioNoEncontrado;
-import BuSmart.APIBuSmart.Models.DTO.EncargadoDTO;
-import BuSmart.APIBuSmart.Repositories.EncargadoRepository;
+import BuSmart.APIBuSmart.Models.DTO.CitasDTO;
+import BuSmart.APIBuSmart.Repositories.CitasRepository;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,84 +18,102 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-public class EncargadoService {
+public class CitasService {
 
     @Autowired
-    EncargadoRepository repoEncargado;
+    CitasRepository repocita;
 
-    public List<EncargadoDTO> obtenerEncargados() {
-        List<EncargadoEntity> lista = repoEncargado.findAll();
+    public List<CitasDTO> obtenerCitas() {
+        List<CitasEntity> lista = repocita.findAll();
         return lista.stream()
                 .map(this::ConvertirADTO)
                 .collect(Collectors.toList());
     }
 
-    private EncargadoDTO ConvertirADTO(EncargadoEntity encargadoEntity) {
-        EncargadoDTO dto = new EncargadoDTO();
-        dto.setIdEncargado(encargadoEntity.getIdEncargado());
-        dto.setNombre(encargadoEntity.getNombre());
-        dto.setNumero(encargadoEntity.getNumero());
-        dto.setEdad(encargadoEntity.getEdad());
-        dto.setDUI(encargadoEntity.getDUI());
-        dto.setCorreo(encargadoEntity.getCorreo());
-        dto.setIdUsuario(encargadoEntity.getIdUsuario());
-        dto.setIdTipoEncargado(encargadoEntity.getIdTipoEncargado());
-        return dto;
-    }
-
-    public EncargadoDTO insertarEncargado(@Valid EncargadoDTO json) {
+    public CitasDTO insertarCitas(@Valid CitasDTO json) {
         if (json == null){
-            throw new IllegalArgumentException("Encargado no puede ser nulo");
+            throw new IllegalArgumentException("La cita no puede ser nula");
         }
 
-        try{
-            EncargadoEntity entity = ConvertirAEntity(json);
-            EncargadoEntity respuesta = repoEncargado.save(entity);
+        // Validación para evitar citas duplicadas para mismo usuario en fecha y horario
+        boolean yaExiste = repocita.existsByIdUsuarioAndIdHorarioAndFechaCita(
+                json.getIdUsuario(), json.getIdHorario(), json.getFecha_cita()
+        );
+
+        if (yaExiste) {
+            throw new ExcepcionCitasDuplicadas("El usuario ya tiene una cita programada en esa fecha y horario", "idUsuario/idHorario/fecha_cita");
+        }
+
+        try {
+            CitasEntity entity = ConvertirAEntity(json);
+            CitasEntity respuesta = repocita.save(entity);
             return ConvertirADTO(respuesta);
-        }catch (Exception e){
-            log.error("error al registrar encargado" + e.getMessage());
-            throw new ExceptionEncargadoNoRegistrado("error al registrar encargado");
+        } catch (Exception e) {
+            log.error("Error al registrar la cita: " + e.getMessage());
+            throw new ExceptionEncargadoNoRegistrado("Error al registrar cita");
         }
     }
 
-    private EncargadoEntity ConvertirAEntity(@Valid EncargadoDTO json) {
-        EncargadoEntity entity = new EncargadoEntity();
-        entity.setIdEncargado(json.getIdEncargado() );
-        entity.setNombre(json.getNombre());
-        entity.setNumero(json.getNumero());
-        entity.setEdad(json.getEdad());
-        entity.setDUI(json.getDUI());
-        entity.setCorreo(json.getCorreo());
-        entity.setIdUsuario(json.getIdUsuario());
-        entity.setIdTipoEncargado(json.getIdTipoEncargado());
-        return entity;
+
+    public CitasDTO actualizarCita(Long id, @Valid CitasDTO json) {
+        CitasEntity citaExistente = repocita.findById(id)
+                .orElseThrow(() -> new ExceptionCitaNoEncontrada("Cita no encontrada"));
+
+        boolean yaExiste = repocita.existsByIdUsuarioAndIdHorarioAndFechaCita(
+                json.getIdUsuario(), json.getIdHorario(), json.getFecha_cita()
+        );
+
+        if (yaExiste && citaExistente.getIdCita() != json.getIdCita()) {
+            throw new ExcepcionCitasDuplicadas(
+                    "El usuario ya tiene una cita programada en esa fecha y horario",
+                    "idUsuario/idHorario/fecha_cita"
+            );
+        }
+
+        citaExistente.setIdUsuario(json.getIdUsuario());
+        citaExistente.setIdCliente(json.getIdCliente());
+        citaExistente.setIdHorario(json.getIdHorario());
+        citaExistente.setFecha_cita(json.getFecha_cita());
+        citaExistente.setEstado(json.getEstado());
+
+        CitasEntity citaActualizada = repocita.save(citaExistente);
+        return ConvertirADTO(citaActualizada);
     }
 
-            public EncargadoDTO actualizarEncargado(Long id, @Valid EncargadoDTO json){
-        EncargadoEntity EncargadoExiste = repoEncargado.findById(id).orElseThrow(() ->new ExceptionEncargadoNoEncontrado("Encargado no encontrado"));
-        EncargadoExiste.setNombre(json.getNombre());
-        EncargadoExiste.setNumero(json.getNumero());
-        EncargadoExiste.setEdad(json.getEdad());
-        EncargadoExiste.setDUI(json.getDUI());
-        EncargadoExiste.setCorreo(json.getCorreo());
-        EncargadoExiste.setIdUsuario(json.getIdUsuario());
-        EncargadoExiste.setIdTipoEncargado(json.getIdTipoEncargado());
-        EncargadoEntity encargadoActualizado = repoEncargado.save(EncargadoExiste);
-        return ConvertirADTO(encargadoActualizado);
-    }
-
-    public boolean removerEncargado(long id) {
+    public boolean removerCitas(long id) {
         try{
-            EncargadoEntity objUsuario = repoEncargado.findById(id).orElse(null);
+            CitasEntity objUsuario = repocita.findById(id).orElse(null);
             if (objUsuario != null){
-                repoEncargado.deleteById(id);
+                repocita.deleteById(id);
                 return true;
             }else{
-                System.out.println("Encargado no encontrado.");
+                System.out.println("cita no encontrado.");
                 return false;
             }
         }catch (EmptyResultDataAccessException e){
-            throw new EmptyResultDataAccessException("No se encontro Encargado con ID: " + id + " para eliminar.", 1);
+            throw new EmptyResultDataAccessException("No se encontro la cita con ID: " + id + " para eliminar.", 1);
         }
+    }
+
+    private CitasDTO ConvertirADTO(CitasEntity encargadoEntity) {
+        CitasDTO dto = new CitasDTO();
+        dto.setIdCita(encargadoEntity.getIdCita());
+        dto.setIdUsuario(encargadoEntity.getIdUsuario());
+        dto.setIdCliente(encargadoEntity.getIdCliente());
+        dto.setIdHorario(encargadoEntity.getIdHorario());
+        dto.setFecha_cita(encargadoEntity.getFecha_cita());
+        dto.setEstado(encargadoEntity.getEstado());
+        return dto;
+    }
+
+    private CitasEntity ConvertirAEntity(@Valid CitasDTO json) {
+        CitasEntity entity = new CitasEntity();
+        entity.setIdCita(json.getIdCita() );
+        entity.setIdUsuario(json.getIdUsuario());
+        entity.setIdCliente(json.getIdCliente());
+        entity.setIdHorario(json.getIdHorario());
+        entity.setFecha_cita(json.getFecha_cita());
+        entity.setEstado(json.getEstado());
+        return entity;
     }
 }

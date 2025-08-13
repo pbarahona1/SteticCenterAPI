@@ -6,35 +6,32 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.Date;
+
 @Entity
-@Table(name = "ENCARGADO")
+@Table(name = "CITAS")
 @Getter @Setter @ToString @EqualsAndHashCode
-public class EncargadoEntity {
+public class CitasEntity {
 
     @Id
-    @Column(name = "IDENCARGADO")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_ENCARGADO")
-    @SequenceGenerator(name = "SEQ_ENCARGADO", sequenceName = "SEQ_ENCARGADO", allocationSize = 1)
-    private long IdEncargado;
-
-    @Column(name = "NOMBRE")
-    private String Nombre;
-
-    @Column(name = "NUMERO")
-    private String Numero;
-
-    @Column(name = "EDAD")
-    private int Edad;
-
-    @Column(name = "DUI")
-    private String DUI;
-
-    @Column(name = "CORREOELECTRONICO")
-    private String Correo;
+    @Column(name = "IDCITA")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_CITAS")
+    @SequenceGenerator(name = "SEQ_CITAS", sequenceName = "SEQ_CITAS", allocationSize = 1)
+    private long idCita;
 
     @Column(name = "IDUSUARIO")
-    private long IdUsuario;
+    private int idUsuario;
 
-    @Column(name = "IDTIPOENCARGADO")
-    private long IdTipoEncargado;
+    @Column(name = "IDCLIENTE")
+    private int idCliente;
+
+    @Column(name = "IDHORARIO")
+    private int idHorario;
+
+    @Column(name = "FECHA_CITA")
+    private Date fecha_cita;
+
+    @Column(name = "ESTADO")
+    private String estado;
+
 }

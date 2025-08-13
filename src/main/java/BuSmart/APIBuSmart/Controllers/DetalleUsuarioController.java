@@ -2,8 +2,8 @@ package BuSmart.APIBuSmart.Controllers;
 
 import BuSmart.APIBuSmart.Exceptions.ExcepUsuarios.ExcepcionDatosDuplicados;
 import BuSmart.APIBuSmart.Exceptions.ExcepUsuarios.ExceptionRutaNoEncontrada;
-import BuSmart.APIBuSmart.Models.DTO.RutaDTO;
-import BuSmart.APIBuSmart.Service.RutaService;
+import BuSmart.APIBuSmart.Models.DTO.DetalleUsuarioDTO;
+import BuSmart.APIBuSmart.Service.DetalleUsuarioService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,20 +18,20 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/apiRuta")
-public class RutaController {
+@RequestMapping("/ApiDetalleUsuario")
+public class DetalleUsuarioController {
 
     @Autowired
-    RutaService service;
+    DetalleUsuarioService service;
 
-    @GetMapping("/ConsultarRutas")
-    public List<RutaDTO> obtenerDatos(){return  service.obtenerRutas();}
+    @GetMapping("/GetDetalleUsuario")
+    public List<DetalleUsuarioDTO> obtenerDatos(){return  service.obtenerDetalleUsuario();}
 
 
-    @PostMapping("/RegistrarRutas")
-    public ResponseEntity<?> nuevoUsuario(@Valid @RequestBody RutaDTO json, HttpServletRequest request){
+    @PostMapping("/PostDetalleUsuario")
+    public ResponseEntity<?> nuevoUsuario(@Valid @RequestBody DetalleUsuarioDTO json, HttpServletRequest request){
         try{
-            RutaDTO respuesta = service.InsertarRutas(json);
+            DetalleUsuarioDTO respuesta = service.InsertarDetalleUsuario(json);
             if (respuesta == null){
                 return ResponseEntity.badRequest().body(Map.of(
                         "status", "Inserccion fallida",
@@ -54,10 +54,10 @@ public class RutaController {
 
     }
 
-    @PutMapping("/EditarRuta/{id}")
+    @PutMapping("/PutDetalleUsuario/{id}")
     public ResponseEntity<?> modificarRuta(
             @PathVariable Long id,
-            @Valid @RequestBody RutaDTO json,
+            @Valid @RequestBody DetalleUsuarioDTO json,
             BindingResult bindingResult
     ){
         if (bindingResult.hasErrors()){
@@ -67,7 +67,7 @@ public class RutaController {
             return ResponseEntity.badRequest().body(errores);
         }
         try{
-            RutaDTO dto = service.ActualizarRuta(id, json);
+            DetalleUsuarioDTO dto = service.ActualizarDetalleUsuario(id, json);
             return ResponseEntity.ok(dto);
         }catch (ExceptionRutaNoEncontrada e){
             return ResponseEntity.notFound().build();
@@ -80,28 +80,28 @@ public class RutaController {
     }
 
 
-    @DeleteMapping("/EliminarRutas/{id}")
+    @DeleteMapping("/DeleteDetalleUsuario/{id}")
     public  ResponseEntity<?> EliminarRuta(
             @PathVariable Long id)
     {
         try{
-            if (!service.QuitarRuta(id)){
+            if (!service.EliminarDetalleUsuario(id)){
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .header("Mensaje de error", "Ruta no Encontrada")
+                        .header("Mensaje de error", "Detalle de Usuario no Encontrada")
                         .body(Map.of(
                                 "Error", "NOT FOUND",
-                                "Mensaje", "La ruta no fue encontrada",
+                                "Mensaje", "el Detalle de Usuario no fue encontrada",
                                 "timestamp", Instant.now().toString()
                         ));
             }
             return ResponseEntity.ok().body(Map.of(
                     "status", "Proceso completado",
-                    "message", "Ruta eliminada exitosamente"
+                    "message", "Detalle de Usuario eliminada exitosamente"
             ));
         }catch (Exception e){
             return ResponseEntity.internalServerError().body(Map.of(
                     "status", "Error",
-                    "message", "Error al eliminar la ruta",
+                    "message", "Error al eliminar el Detalle de Usuario",
                     "detail", e.getMessage()
             ));
         }

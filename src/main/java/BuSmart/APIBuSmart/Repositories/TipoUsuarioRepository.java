@@ -1,9 +1,12 @@
 package BuSmart.APIBuSmart.Repositories;
 
-import BuSmart.APIBuSmart.Entities.UnidadesEntity;
+import BuSmart.APIBuSmart.Entities.TipoUsuarioEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
-public interface UnidadesRepository extends JpaRepository<UnidadesEntity, Long> {
+public interface TipoUsuarioRepository extends JpaRepository<TipoUsuarioEntity, Long> {
+    Optional<TipoUsuarioEntity> findByNombreTipoIgnoreCase(String nombreTipo);
 }

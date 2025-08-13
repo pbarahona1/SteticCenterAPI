@@ -1,7 +1,7 @@
 package BuSmart.APIBuSmart.Exceptions.ExcepEspecialista;
 
-public class ExceptionTipoEncargadoNoEncontrado extends RuntimeException {
-    public ExceptionTipoEncargadoNoEncontrado(String message) {
+public class ExceptionEspecialistaNoEncontrado extends RuntimeException {
+    public ExceptionEspecialistaNoEncontrado(String message) {
         super(message);
     }
 }

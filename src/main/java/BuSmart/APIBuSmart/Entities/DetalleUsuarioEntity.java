@@ -9,28 +9,20 @@ import lombok.ToString;
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "TBRUTA")
+@Table(name = "DETALLEUSUARIO")
 @Getter @Setter @ToString @EqualsAndHashCode
-public class RutaEntity {
+public class DetalleUsuarioEntity {
 
     @Id
-    @Column(name ="IDRUTA")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_USUARIO")
-    @SequenceGenerator(name = "SEQ_USUARIO", sequenceName = "SEQ_USUARIO", allocationSize = 1)
-    private Long idruta;
+    @Column(name ="IDDETALLEUSUARIO")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_DETALLEUSUARIO")
+    @SequenceGenerator(name = "SEQ_DETALLEUSUARIO", sequenceName = "SEQ_DETALLEUSUARIO", allocationSize = 1)
+    private Long idDetalleUsuario;
 
-    @Column(name ="RUTANOMBRE")
-    private String rutaNombre;
+    @Column(name ="IDUSUARIO")
+    private int idUsuario;
 
-    @Column(name ="PRECIO")
-    private BigDecimal precio;
+    @Column(name ="IDESPECIALISTA")
+    private int idEspecialista;
 
-    @Column(name ="INFORUTAS")
-    private String infoRutas;
-
-    @Column(name ="RUTAIMAGEN")
-    private String rutaImagen;
-
-    @Column(name ="URLRUTA")
-    private String urlRuta;
 }

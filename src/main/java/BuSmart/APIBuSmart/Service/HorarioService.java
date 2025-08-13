@@ -1,9 +1,9 @@
 package BuSmart.APIBuSmart.Service;
 
-import BuSmart.APIBuSmart.Entities.EstadoEntity;
+import BuSmart.APIBuSmart.Entities.HorarioEntity;
 import BuSmart.APIBuSmart.Exceptions.ExcepUsuarios.ExceptionRutaNoEncontrada;
-import BuSmart.APIBuSmart.Models.DTO.EstadoDTO;
-import BuSmart.APIBuSmart.Repositories.EstadoRepository;
+import BuSmart.APIBuSmart.Models.DTO.HorarioDTO;
+import BuSmart.APIBuSmart.Repositories.HorarioRepository;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,63 +15,64 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-public class EstadoService {
+public class HorarioService {
 
     @Autowired
-    EstadoRepository rep;
+    HorarioRepository rep;
 
 
-    public List<EstadoDTO> obtenerEstado() {
-        List<EstadoEntity> Ruta = rep.findAll();
+    public List<HorarioDTO> obtenerHorario() {
+        List<HorarioEntity> Ruta = rep.findAll();
         return Ruta.stream()
                 .map(this::ConvertirADTO)
                 .collect(Collectors.toList());
     }
 
-    public EstadoDTO InsertarEstado(@Valid EstadoDTO json) {
+    public HorarioDTO InsertarHorario(@Valid HorarioDTO json) {
         try{
-            EstadoEntity entity = ConvertirAEntity(json);
-            EstadoEntity EstadoGuardado = rep.save(entity);
+            HorarioEntity entity = ConvertirAEntity(json);
+            HorarioEntity EstadoGuardado = rep.save(entity);
             return ConvertirADTO(EstadoGuardado);
         }catch (Exception e){
-            log.error("Error al registrar Estado: " + e.getMessage());
+            log.error("Error al registrar Horario: " + e.getMessage());
             throw new ExceptionRutaNoEncontrada("Error al registar el.");
         }
     }
 
 
-    public boolean QuitarEstado(Long id) {
+    public boolean QuitarHorario(Long id) {
         try{
-            EstadoEntity objEstado = rep.findById(id).orElse(null);
+            HorarioEntity objEstado = rep.findById(id).orElse(null);
             if (objEstado != null){
                 rep.deleteById(id);
                 return true;
             }else{
-                System.out.println("Estado no encontrada.");
+                System.out.println("Horario no encontrada.");
                 return false;
             }
         }catch (EmptyResultDataAccessException e){
-            throw new EmptyResultDataAccessException("No se encontro el Estado con ID: " + id + " para eliminar.", 1);
+            throw new EmptyResultDataAccessException("No se encontro el Horario con ID: " + id + " para eliminar.", 1);
         }
     }
 
-    private EstadoDTO ConvertirADTO(EstadoEntity estadoEntity) {
-        EstadoDTO dto = new EstadoDTO();
-        dto.setIdEstado(estadoEntity.getIdEstado());
-        dto.setTipoEstado(estadoEntity.getTipoEstado());
+    private HorarioDTO ConvertirADTO(HorarioEntity estadoEntity) {
+        HorarioDTO dto = new HorarioDTO();
+        dto.setIdHorario(estadoEntity.getIdHorario());
+        dto.setDescripcion(estadoEntity.getDescripcion());
         return dto;
     }
 
-    private EstadoEntity ConvertirAEntity(EstadoDTO data) {
-        EstadoEntity entity = new EstadoEntity();
-        entity.setTipoEstado(data.getTipoEstado());
+    private HorarioEntity ConvertirAEntity(HorarioDTO data) {
+        HorarioEntity entity = new HorarioEntity();
+        entity.setIdHorario(data.getIdHorario());
+        entity.setDescripcion(data.getDescripcion());
         return entity;
     }
 
-    public EstadoDTO ActualizarEstado(Long id, @Valid EstadoDTO json) {
-        EstadoEntity EstadoExistente = rep.findById(id).orElseThrow(() -> new ExceptionRutaNoEncontrada("Estado no encontrada"));
-        EstadoExistente.setTipoEstado(json.getTipoEstado());
-        EstadoEntity EstadoActualizada = rep.save(EstadoExistente);
+    public HorarioDTO ActualizarHorario(Long id, @Valid HorarioDTO json) {
+        HorarioEntity EstadoExistente = rep.findById(id).orElseThrow(() -> new ExceptionRutaNoEncontrada("Horario no encontrada"));
+        EstadoExistente.setDescripcion(json.getDescripcion());
+        HorarioEntity EstadoActualizada = rep.save(EstadoExistente);
         return ConvertirADTO(EstadoActualizada);
     }
 }

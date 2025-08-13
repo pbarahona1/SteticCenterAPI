@@ -2,7 +2,6 @@ package BuSmart.APIBuSmart.Controllers;
 
 import BuSmart.APIBuSmart.Exceptions.ExcepUsuarios.ExcepcionDatosDuplicados;
 import BuSmart.APIBuSmart.Exceptions.ExcepUsuarios.ExceptionsUsuarioNoEncontrado;
-import BuSmart.APIBuSmart.Models.DTO.RutaDTO;
 import BuSmart.APIBuSmart.Models.DTO.UserDTO;
 import BuSmart.APIBuSmart.Service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,6 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,13 +27,25 @@ public class UserController {
     @Autowired
     UserService acceso;
 
-    @GetMapping("/usuarios")
-    public List<UserDTO> datosUsuarios() {return  acceso.getAllUsers();}
+    @GetMapping("/GetUsuarios")
+    public List<UserDTO> getUsuarios() {return  acceso.getAllUsers();}
 
-    @PostMapping("/ingresarUsuario")
-    public ResponseEntity<?>registrarUsuario(@Valid @RequestBody UserDTO json, HttpServletRequest request) {
+
+    @PostMapping("/PostUsuarios")
+    public ResponseEntity<?> postUsuarios(@Valid @RequestBody UserDTO json, HttpServletRequest request) {
         try {
-            //Intento de guardar al usuario
+            LocalDate fechaNacimiento = json.getNacimiento()
+                    .toInstant()
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDate();
+
+            if (Period.between(fechaNacimiento, LocalDate.now()).getYears() < 18) {
+                return ResponseEntity.badRequest().body(Map.of(
+                        "status", "Validacion incorrecta",
+                        "errorType", "VALIDATION_ERROR",
+                        "message", "El usuario debe tener al menos 18 años"
+                ));
+            }
             UserDTO respuesta = acceso.insertUser(json);
             if (respuesta == null) {
                 return ResponseEntity.badRequest().body(Map.of(
@@ -41,7 +55,7 @@ public class UserController {
                 ));
             }
             return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
-                    "status", "succes",
+                    "status", "success",
                     "data", respuesta));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -53,8 +67,9 @@ public class UserController {
         }
     }
 
-    @PutMapping("ModificarUsuario/{id}")
-    public ResponseEntity<?> modificarUsuario(
+
+    @PutMapping("PutUsuario/{id}")
+    public ResponseEntity<?> putUsuario(
             @PathVariable Long id,
             @Valid @RequestBody UserDTO usuario,
             BindingResult bindingResult){
@@ -63,6 +78,18 @@ public class UserController {
             bindingResult.getFieldErrors().forEach(error ->
                     errores.put(error.getField(), error.getDefaultMessage()));
             return ResponseEntity.badRequest().body(errores);
+        }
+        LocalDate fechaNacimiento = usuario.getNacimiento()
+                .toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
+
+        if (Period.between(fechaNacimiento, LocalDate.now()).getYears() < 18) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "status", "Validacion incorrecta",
+                    "errorType", "VALIDATION_ERROR",
+                    "message", "El usuario debe tener al menos 18 años"
+            ));
         }
         try {
             UserDTO usuarioActualizado = acceso.actualizarUsuario(id, usuario);
@@ -78,8 +105,10 @@ public class UserController {
         }
     }
 
-    @DeleteMapping("/eliminarusuario/{id}")
-    public ResponseEntity<Map<String, Object>>eliminarUsuario(@PathVariable long id){
+
+
+    @DeleteMapping("/DeleteUsuario/{id}")
+    public ResponseEntity<Map<String, Object>>deleteUsuario(@PathVariable long id){
         try {
             if (!acceso.removerUsuario(id)){
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
