@@ -8,5 +8,5 @@ import java.util.Date;
 
 @Repository
 public interface CitasRepository extends JpaRepository<CitasEntity, Long> {
-    boolean existsByIdUsuarioAndIdHorarioAndFechaCita(int idUsuario, int idHorario, Date fecha_cita);
+    boolean existsByIdUsuarioAndIdHorarioAndFechaCita(int idUsuario, int idHorario, Date fechaCita);
 }

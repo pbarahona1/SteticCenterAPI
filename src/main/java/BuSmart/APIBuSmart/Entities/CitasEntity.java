@@ -29,7 +29,7 @@ public class CitasEntity {
     private int idHorario;
 
     @Column(name = "FECHA_CITA")
-    private Date fecha_cita;
+    private Date fechaCita;
 
     @Column(name = "ESTADO")
     private String estado;
