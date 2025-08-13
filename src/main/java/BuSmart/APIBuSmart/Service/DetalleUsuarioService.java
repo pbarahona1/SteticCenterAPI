@@ -1,9 +1,9 @@
 package BuSmart.APIBuSmart.Service;
 
-import BuSmart.APIBuSmart.Entities.RutaEntity;
+import BuSmart.APIBuSmart.Entities.DetalleUsuarioEntity;
 import BuSmart.APIBuSmart.Exceptions.ExcepUsuarios.ExceptionRutaNoEncontrada;
-import BuSmart.APIBuSmart.Models.DTO.RutaDTO;
-import BuSmart.APIBuSmart.Repositories.RutaRepository;
+import BuSmart.APIBuSmart.Models.DTO.DetalleUsuarioDTO;
+import BuSmart.APIBuSmart.Repositories.DetalleUsuarioRepository;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,22 +15,22 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-public class RutaService {
+public class DetalleUsuarioService {
 
         @Autowired
-        RutaRepository repo;
+        DetalleUsuarioRepository repo;
 
-    public List<RutaDTO> obtenerRutas() {
-        List<RutaEntity> Ruta = repo.findAll();
+    public List<DetalleUsuarioDTO> obtenerDetalleUsuario() {
+        List<DetalleUsuarioEntity> Ruta = repo.findAll();
         return Ruta.stream()
                 .map(this::ConvertirADTO)
                 .collect(Collectors.toList());
     }
 
-    public RutaDTO InsertarRutas(@Valid RutaDTO rut) {
+    public DetalleUsuarioDTO InsertarDetalleUsuario(@Valid DetalleUsuarioDTO rut) {
         try{
-            RutaEntity entity = ConvertirAEntity(rut);
-            RutaEntity usuarioGuardado = repo.save(entity);
+            DetalleUsuarioEntity entity = ConvertirAEntity(rut);
+            DetalleUsuarioEntity usuarioGuardado = repo.save(entity);
             return ConvertirADTO(usuarioGuardado);
         }catch (Exception e){
             log.error("Error al registrar Ruta: " + e.getMessage());
@@ -40,54 +40,43 @@ public class RutaService {
 
     }
 
-
-
-    private RutaDTO ConvertirADTO(RutaEntity rutaEntity) {
-        RutaDTO dto = new RutaDTO();
-        dto.setIdruta(rutaEntity.getIdruta());
-        dto.setRutaNombre(rutaEntity.getRutaNombre());
-        dto.setPrecio(rutaEntity.getPrecio());
-        dto.setInfoRutas(rutaEntity.getInfoRutas());
-        dto.setRutaImagen(rutaEntity.getRutaImagen());
-        dto.setUrlRuta(rutaEntity.getUrlRuta());
-        return dto;
-    }
-
-
-    private RutaEntity ConvertirAEntity(RutaDTO data) {
-        RutaEntity entity = new RutaEntity();
-        entity.setRutaNombre(data.getRutaNombre());
-        entity.setPrecio(data.getPrecio());
-        entity.setInfoRutas(data.getInfoRutas());
-        entity.setRutaImagen(data.getRutaImagen());
-        entity.setUrlRuta(data.getUrlRuta());
-        return entity;
-    }
-
-    public RutaDTO ActualizarRuta(Long id, RutaDTO json) {
-        RutaEntity rutaExistente = repo.findById(id).orElseThrow(() -> new ExceptionRutaNoEncontrada("Ruta no encontrada"));
-        rutaExistente.setRutaNombre(json.getRutaNombre());
-        rutaExistente.setPrecio(json.getPrecio());
-        rutaExistente.setInfoRutas(json.getInfoRutas());
-        rutaExistente.setRutaImagen(json.getRutaImagen());
-        rutaExistente.setUrlRuta(json.getUrlRuta());
-
-        RutaEntity RutaActualizada = repo.save(rutaExistente);
+    public DetalleUsuarioDTO ActualizarDetalleUsuario(Long id, DetalleUsuarioDTO json) {
+        DetalleUsuarioEntity Existente = repo.findById(id).orElseThrow(() -> new ExceptionRutaNoEncontrada("Detalle de Usuario no encontrada"));
+        Existente.setIdUsuario(json.getIdUsuario());
+        Existente.setIdEspecialista(json.getIdEspecialista());
+        DetalleUsuarioEntity RutaActualizada = repo.save(Existente);
         return ConvertirADTO(RutaActualizada);
     }
 
-    public boolean QuitarRuta(Long id) {
+    public boolean EliminarDetalleUsuario(Long id) {
         try{
-            RutaEntity objRuta = repo.findById(id).orElse(null);
+            DetalleUsuarioEntity objRuta = repo.findById(id).orElse(null);
             if (objRuta != null){
                 repo.deleteById(id);
                 return true;
             }else{
-                System.out.println("Ruta no encontrada.");
+                System.out.println("Detalle de usuario no encontrada.");
                 return false;
             }
         }catch (EmptyResultDataAccessException e){
-            throw new EmptyResultDataAccessException("No se encontro la ruta con ID: " + id + " para eliminar.", 1);
+            throw new EmptyResultDataAccessException("No se encontro el detalle de usuario con ID: " + id + " para eliminar.", 1);
         }
+    }
+
+    private DetalleUsuarioDTO ConvertirADTO(DetalleUsuarioEntity rutaEntity) {
+        DetalleUsuarioDTO dto = new DetalleUsuarioDTO();
+        dto.setIdDetalleUsuario(rutaEntity.getIdDetalleUsuario());
+        dto.setIdUsuario(rutaEntity.getIdUsuario());
+        dto.setIdEspecialista(rutaEntity.getIdEspecialista());
+        return dto;
+    }
+
+
+    private DetalleUsuarioEntity ConvertirAEntity(DetalleUsuarioDTO data) {
+        DetalleUsuarioEntity entity = new DetalleUsuarioEntity();
+        entity.setIdDetalleUsuario(data.getIdDetalleUsuario());
+        entity.setIdUsuario(data.getIdUsuario());
+        entity.setIdEspecialista(data.getIdEspecialista());
+        return entity;
     }
 }

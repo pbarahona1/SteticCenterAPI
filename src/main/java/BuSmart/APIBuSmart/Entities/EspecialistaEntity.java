@@ -7,17 +7,17 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Table(name = "TBTIPOENCARGADO")
+@Table(name = "ESPECIALISTA")
 @Getter @Setter @ToString @EqualsAndHashCode
-public class TipoEncargadoEntity {
+public class EspecialistaEntity {
 
     @Id
-    @Column(name ="IDTIPOENCARGADO")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_TIPOENCARGADO")
-    @SequenceGenerator(name = "SEQ_TIPOENCARGADO", sequenceName = "SEQ_TIPOENCARGADO", allocationSize = 1)
-    private Long IdTipoEncargado;
+    @Column(name ="IDESPECIALISTA")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_ESPECIALISTA")
+    @SequenceGenerator(name = "SEQ_ESPECIALISTA", sequenceName = "SEQ_ESPECIALISTA", allocationSize = 1)
+    private Long idEspecialista;
 
-    @Column(name = "TIPOFAMILIAR")
-    private String TipoFamiliar;
+    @Column(name = "ESPECIALIDAD")
+    private String especialidad;
 
 }

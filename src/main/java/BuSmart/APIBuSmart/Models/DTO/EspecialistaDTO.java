@@ -8,10 +8,10 @@ import lombok.ToString;
 
 @ToString @EqualsAndHashCode
 @Getter @Setter
-public class TipoEncargadoDTO {
+public class EspecialistaDTO {
 
-    private Long IdTipoEncargado;
+    private Long idEspecialista;
 
-    @NotBlank(message = "El tipo de encargado es obligatorio")
-    private String TipoFamiliar;
+    @NotBlank(message = "La especialidad es obligatorio")
+    private String especialidad;
 }

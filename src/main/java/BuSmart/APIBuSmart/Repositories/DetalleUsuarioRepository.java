@@ -1,9 +1,9 @@
 package BuSmart.APIBuSmart.Repositories;
 
-import BuSmart.APIBuSmart.Entities.RutaEntity;
+import BuSmart.APIBuSmart.Entities.DetalleUsuarioEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface RutaRepository extends JpaRepository<RutaEntity, Long> {
+public interface DetalleUsuarioRepository extends JpaRepository<DetalleUsuarioEntity, Long> {
 }

@@ -1,7 +1,7 @@
 package BuSmart.APIBuSmart.Controllers;
 
-import BuSmart.APIBuSmart.Models.DTO.UnidadesDTO;
-import BuSmart.APIBuSmart.Service.UnidadesService;
+import BuSmart.APIBuSmart.Models.DTO.TipoUsuarioDTO;
+import BuSmart.APIBuSmart.Service.TipoUsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,61 +11,60 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/apiUnidades")
-public class UnidadesController {
+@RequestMapping("/ApiTipoUsuario")
+public class TipoUsuarioController {
 
     @Autowired
-    private UnidadesService service;
+    TipoUsuarioService service;
 
     // Obtener todas las unidades
-    @GetMapping("/ObtenerUnidades")
-    public ResponseEntity<List<UnidadesDTO>> obtenerTodasUnidades() {
-        List<UnidadesDTO> unidades = service.obtenerTodasUnidades();
+    @GetMapping("/GetTipoUsuario")
+    public ResponseEntity<List<TipoUsuarioDTO>> obtenerTodasUnidades() {
+        List<TipoUsuarioDTO> unidades = service.ObtenerTiposUsuario();
         return ResponseEntity.ok(unidades);
     }
 
     // Crear nueva unidad
-    @PostMapping("/RegistrarUnidad")
-    public ResponseEntity<?> crearUnidad(@RequestBody UnidadesDTO dto) {
+    @PostMapping("/PostTipoUsuario")
+    public ResponseEntity<?> crearUnidad(@RequestBody TipoUsuarioDTO dto) {
         try {
-            UnidadesDTO nuevaUnidad = service.crearUnidad(dto);
+            TipoUsuarioDTO nuevaUnidad = service.CrearTipoUsuario(dto);
             return ResponseEntity.status(HttpStatus.CREATED).body(nuevaUnidad);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of(
-                    "error", "Error al crear unidad",
+                    "error", "Error al crear el tipo de usuario",
                     "message", e.getMessage()
             ));
         }
     }
 
-    @PutMapping("/ActualizarUnidad/{id}")
+    @PutMapping("/PutTipoUsuario/{id}")
     public ResponseEntity<?> actualizarUnidad(
             @PathVariable Long id,
-            @RequestBody UnidadesDTO dto) {
+            @RequestBody TipoUsuarioDTO dto) {
         try {
-            dto.setIdUnidad(id);
-            UnidadesDTO actualizada = service.actualizarUnidad(id, dto);
+            TipoUsuarioDTO actualizada = service.actualizarTipoUsuario(id, dto);
             return ResponseEntity.ok(actualizada);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of(
-                    "error", "Error al actualizar unidad",
+                    "error", "Error al actualizar el tipo de usuario",
                     "message", e.getMessage()
             ));
         }
     }
 
     // Eliminar unidad
-    @DeleteMapping("/EliminarUnidad/{id}")
+    @DeleteMapping("/DeleteTipoUsuario/{id}")
     public ResponseEntity<?> eliminarUnidad(@PathVariable Long id) {
         try {
-            service.eliminarUnidad(id);
+            service.eliminarTipoUnidad(id);
             return ResponseEntity.ok().body(Map.of(
                     "status", "success",
-                    "message", "Unidad eliminada correctamente"
+                    "message", "tipo de usuario eliminado correctamente"
             ));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of(
-                    "error", "Error al eliminar unidad",
+                    "error", "Error al eliminar el tipo de usuario",
                     "message", e.getMessage()
             ));
         }

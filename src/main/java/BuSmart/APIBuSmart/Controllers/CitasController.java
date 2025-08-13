@@ -1,12 +1,9 @@
 package BuSmart.APIBuSmart.Controllers;
 
-import BuSmart.APIBuSmart.Exceptions.ExcepUsuarios.ExcepcionDatosDuplicados;
 import BuSmart.APIBuSmart.Exceptions.ExcepUsuarios.ExcepcionEncargadoDuplicados;
 import BuSmart.APIBuSmart.Exceptions.ExcepUsuarios.ExceptionEncargadoNoEncontrado;
-import BuSmart.APIBuSmart.Exceptions.ExcepUsuarios.ExceptionEncargadoNoRegistrado;
-import BuSmart.APIBuSmart.Models.DTO.EncargadoDTO;
-import BuSmart.APIBuSmart.Service.EncargadoService;
-import jakarta.servlet.http.HttpServlet;
+import BuSmart.APIBuSmart.Models.DTO.CitasDTO;
+import BuSmart.APIBuSmart.Service.CitasService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,21 +18,21 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/APIEncargado")
-public class EncergadoController {
+@RequestMapping("/ApiCitas")
+public class CitasController {
 
     @Autowired
-    EncargadoService serviceEncargado;
+    CitasService servicecita;
 
-    @GetMapping("/ConsultarEncargado")
-    public List<EncargadoDTO> obtenerEncargado(){
-        return serviceEncargado.obtenerEncargados();
+    @GetMapping("/GetCitas")
+    public List<CitasDTO> obtenerEncargado(){
+        return servicecita.obtenerCitas();
     }
 
-    @PostMapping("/RegistrarEncargado")
-    public ResponseEntity<?> nuevoUsuario(@Valid @RequestBody EncargadoDTO json, HttpServletRequest request){
+    @PostMapping("/PostCitas")
+    public ResponseEntity<?> nuevoUsuario(@Valid @RequestBody CitasDTO json, HttpServletRequest request){
         try{
-            EncargadoDTO respuesta = serviceEncargado.insertarEncargado(json);
+            CitasDTO respuesta = servicecita.insertarCitas(json);
             if(respuesta == null){
                 return ResponseEntity.badRequest().body(Map.of(
                         "status", "insercion fallida",
@@ -57,10 +54,10 @@ public class EncergadoController {
         }
     }
 
-    @PutMapping("/EditarEncargado/{id}")
+    @PutMapping("/PutCitas/{id}")
     public ResponseEntity<?> ModificarEncargado(
             @PathVariable Long id,
-            @Valid @RequestBody EncargadoDTO json,
+            @Valid @RequestBody CitasDTO json,
             BindingResult bindingResult
     ){
         if (bindingResult.hasErrors()){
@@ -71,7 +68,7 @@ public class EncergadoController {
         }
 
         try{
-            EncargadoDTO dto = serviceEncargado.actualizarEncargado(id, json);
+            CitasDTO dto = servicecita.actualizarCita(id, json);
             return ResponseEntity.ok(dto);
         }
 
@@ -86,11 +83,11 @@ public class EncergadoController {
         }
     }
 
-    @DeleteMapping("/EliminarEncargado/{id}")
+    @DeleteMapping("/DeleteCitas/{id}")
     public ResponseEntity<?> eliminarEncargado(@PathVariable long id){
         try{
 
-            if (serviceEncargado.removerEncargado(id)) {
+            if (servicecita.removerCitas(id)) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .header("X-Mensage-Error", "Encargado no encontrado")
                         .body(Map.of(

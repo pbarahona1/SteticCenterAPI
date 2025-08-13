@@ -1,11 +1,10 @@
 package BuSmart.APIBuSmart.Service;
 
-import BuSmart.APIBuSmart.Entities.TipoEncargadoEntity;
-import BuSmart.APIBuSmart.Exceptions.ExcepTipoEncargado.ExceptionTipoEncargadoNoEncontrado;
-import BuSmart.APIBuSmart.Exceptions.ExcepTipoEncargado.ExceptionTipoEncargadoNoRegistrado;
-import BuSmart.APIBuSmart.Models.DTO.TipoEncargadoDTO;
-import BuSmart.APIBuSmart.Repositories.RutaRepository;
-import BuSmart.APIBuSmart.Repositories.TipoEncargadoRepository;
+import BuSmart.APIBuSmart.Entities.EspecialistaEntity;
+import BuSmart.APIBuSmart.Exceptions.ExcepEspecialista.ExceptionEspecialidadDuplicados;
+import BuSmart.APIBuSmart.Exceptions.ExcepEspecialista.ExceptionEspecialistaNoRegistrado;
+import BuSmart.APIBuSmart.Models.DTO.EspecialistaDTO;
+import BuSmart.APIBuSmart.Repositories.EspecialistaRepository;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,69 +16,55 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-public class TipoEncargadoService {
+public class EspecialistaService {
 
 
     @Autowired
-    TipoEncargadoRepository repo;
+    EspecialistaRepository repo;
 
-    public List<TipoEncargadoDTO> obtenerTipoEncargado() {
-        List<TipoEncargadoEntity> lista = repo.findAll();
+    public List<EspecialistaDTO> obtenerEspecialista() {
+        List<EspecialistaEntity> lista = repo.findAll();
         return lista.stream().map(this::convertirADTO).collect(Collectors.toList());
 
     }
 
-    private TipoEncargadoDTO convertirADTO(TipoEncargadoEntity tipoEncargadoEntity) {
-        //Creando objeto a retornar
-        TipoEncargadoDTO dto = new TipoEncargadoDTO();
-        //Transferir los datos al dto
-        dto.setIdTipoEncargado(tipoEncargadoEntity.getIdTipoEncargado());
-        dto.setTipoFamiliar(tipoEncargadoEntity.getTipoFamiliar());
 
-        return dto;
-
+    public EspecialistaDTO InsertarTipoEspecialista(EspecialistaDTO data) {
+        if (data == null || data.getEspecialidad().isEmpty()) {
+            throw new IllegalArgumentException("Tipo Especialista no puede ser nulo");
+        }
+        String especialidad = data.getEspecialidad().trim();
+        if (repo.existsByEspecialidadIgnoreCase(especialidad)) {
+            throw new ExceptionEspecialidadDuplicados("especialidad");
+        }
+        data.setEspecialidad(especialidad);
+        try {
+            EspecialistaEntity entity = convertirAEntity(data);
+            EspecialistaEntity EncargadoGuardado = repo.save(entity);
+            return convertirADTO(EncargadoGuardado);
+        } catch (Exception e) {
+            log.error("Error al registrar tipo Especialista" + e.getMessage());
+            throw new ExceptionEspecialistaNoRegistrado("Error al registrar especialista.");
+        }
     }
 
 
-    public TipoEncargadoDTO InsertarTipoEncargado(TipoEncargadoDTO data) {
-
-    if (data == null || data.getTipoFamiliar().isEmpty()){
-        throw new IllegalArgumentException("Tipo Encargado no puede ser nulo");
-    }
-    try {
-        TipoEncargadoEntity entity = convertirAEntity(data);
-        TipoEncargadoEntity EncargadoGuardado = repo.save(entity);
-        return convertirADTO(EncargadoGuardado);
-    }catch (Exception e){
-        log.error("Error al registrar tipo encargado" + e.getMessage());
-        throw new ExceptionTipoEncargadoNoRegistrado("Error al registrar usuario.");
-    }
-    }
-
-    private TipoEncargadoEntity convertirAEntity(TipoEncargadoDTO data){
-
-        TipoEncargadoEntity entity = new TipoEncargadoEntity();
-        entity.setTipoFamiliar(data.getTipoFamiliar());
-        return entity;
-    }
-
-
-    public TipoEncargadoDTO ActualizarTipoDeEncargado(Long id, @Valid TipoEncargadoDTO json) {
-        //Verificar la existencia del encargado
-        TipoEncargadoEntity existente = repo.findById(id).orElseThrow(() -> new ExceptionTipoEncargadoNoEncontrado("Tipo encargado no encontrado"));
-        //Convertir los datos DTO a entity
-        existente.setTipoFamiliar(json.getTipoFamiliar());
-        //Guardar los nuevos valores
-        TipoEncargadoEntity TipoEncargadoActualizado = repo.save(existente);
-        //Convertrir los datos de entity a dto
+    public EspecialistaDTO ActualizarTipoDeEncargado(Long id, @Valid EspecialistaDTO json) {
+        EspecialistaEntity existente = repo.findById(id)
+                .orElseThrow(() -> new ExceptionEspecialistaNoRegistrado("especialista no encontrado"));
+        String nuevaEspecialidad = json.getEspecialidad().trim();
+        if (!existente.getEspecialidad().equalsIgnoreCase(nuevaEspecialidad) &&
+                repo.existsByEspecialidadIgnoreCase(nuevaEspecialidad)) {
+            throw new ExceptionEspecialidadDuplicados("especialidad");
+        }
+        existente.setEspecialidad(nuevaEspecialidad);
+        EspecialistaEntity TipoEncargadoActualizado = repo.save(existente);
         return convertirADTO(TipoEncargadoActualizado);
     }
 
     public boolean EliminarTipoEncargado(Long id) {
         try {
-            //validar si existe
-            TipoEncargadoEntity tipoEncargadoExiste = repo.findById(id).orElse(null);
-            //EliminarUsuario
+            EspecialistaEntity tipoEncargadoExiste = repo.findById(id).orElse(null);
             if (tipoEncargadoExiste != null){
                 repo.deleteById(id);
                 return true;
@@ -87,7 +72,25 @@ public class TipoEncargadoService {
                 return false;
             }
         }catch (EmptyResultDataAccessException e){
-            throw  new EmptyResultDataAccessException("No se encontro el tipo encargado con el id: " + id + "para eliminar. ", 1);
+            throw  new EmptyResultDataAccessException("No se encontro el tipo especialista con el id: " + id + "para eliminar. ", 1);
         }
     }
+
+    private EspecialistaDTO convertirADTO(EspecialistaEntity tipoEncargadoEntity) {
+        //Creando objeto a retornar
+        EspecialistaDTO dto = new EspecialistaDTO();
+        //Transferir los datos al dto
+        dto.setIdEspecialista(tipoEncargadoEntity.getIdEspecialista());
+        dto.setEspecialidad(tipoEncargadoEntity.getEspecialidad());
+        return dto;
+
+    }
+
+    private EspecialistaEntity convertirAEntity(EspecialistaDTO data){
+        EspecialistaEntity entity = new EspecialistaEntity();
+        entity.setIdEspecialista(data.getIdEspecialista());
+        entity.setEspecialidad(data.getEspecialidad());
+        return entity;
+    }
+
 }

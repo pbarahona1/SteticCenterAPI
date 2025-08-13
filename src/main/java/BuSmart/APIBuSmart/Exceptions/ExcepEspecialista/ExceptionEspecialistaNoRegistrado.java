@@ -1,7 +1,7 @@
 package BuSmart.APIBuSmart.Exceptions.ExcepEspecialista;
 
-public class ExceptionTipoEncargadoNoRegistrado extends RuntimeException {
-    public ExceptionTipoEncargadoNoRegistrado(String message) {
+public class ExceptionEspecialistaNoRegistrado extends RuntimeException {
+    public ExceptionEspecialistaNoRegistrado(String message) {
         super(message);
     }
 }
