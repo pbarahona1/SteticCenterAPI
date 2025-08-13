@@ -1,6 +1,5 @@
 package BuSmart.APIBuSmart.Repositories;
 
-import BuSmart.APIBuSmart.Entities.CitasEntity;
 import BuSmart.APIBuSmart.Entities.DetallesCitasEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

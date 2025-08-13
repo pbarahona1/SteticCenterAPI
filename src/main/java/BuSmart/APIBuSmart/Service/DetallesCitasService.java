@@ -1,13 +1,9 @@
 package BuSmart.APIBuSmart.Service;
 
-import BuSmart.APIBuSmart.Entities.CitasEntity;
 import BuSmart.APIBuSmart.Entities.DetallesCitasEntity;
-import BuSmart.APIBuSmart.Exceptions.ExcepCitas.ExcepcionCitasDuplicadas;
 import BuSmart.APIBuSmart.Exceptions.ExcepCitas.ExceptionCitaNoEncontrada;
 import BuSmart.APIBuSmart.Exceptions.ExcepUsuarios.ExceptionEncargadoNoRegistrado;
-import BuSmart.APIBuSmart.Models.DTO.CitasDTO;
 import BuSmart.APIBuSmart.Models.DTO.DetallesCitasDTO;
-import BuSmart.APIBuSmart.Repositories.CitasRepository;
 import BuSmart.APIBuSmart.Repositories.DetallesCitasRepository;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
