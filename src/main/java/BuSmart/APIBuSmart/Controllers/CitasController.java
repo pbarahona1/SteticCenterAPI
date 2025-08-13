@@ -19,7 +19,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/ApiCitas")
-public class CitasController {
+public class    CitasController {
 
     @Autowired
     CitasService servicecita;

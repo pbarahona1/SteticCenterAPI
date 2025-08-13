@@ -73,7 +73,7 @@ public class CitasService {
         citaExistente.setIdUsuario(json.getIdUsuario());
         citaExistente.setIdCliente(json.getIdCliente());
         citaExistente.setIdHorario(json.getIdHorario());
-        citaExistente.setFecha_cita(json.getFecha_cita());
+        citaExistente.setFechaCita(json.getFecha_cita());
         citaExistente.setEstado(json.getEstado());
 
         CitasEntity citaActualizada = repocita.save(citaExistente);
@@ -101,7 +101,7 @@ public class CitasService {
         dto.setIdUsuario(encargadoEntity.getIdUsuario());
         dto.setIdCliente(encargadoEntity.getIdCliente());
         dto.setIdHorario(encargadoEntity.getIdHorario());
-        dto.setFecha_cita(encargadoEntity.getFecha_cita());
+        dto.setFecha_cita(encargadoEntity.getFechaCita());
         dto.setEstado(encargadoEntity.getEstado());
         return dto;
     }
@@ -112,7 +112,7 @@ public class CitasService {
         entity.setIdUsuario(json.getIdUsuario());
         entity.setIdCliente(json.getIdCliente());
         entity.setIdHorario(json.getIdHorario());
-        entity.setFecha_cita(json.getFecha_cita());
+        entity.setFechaCita(json.getFecha_cita());
         entity.setEstado(json.getEstado());
         return entity;
     }
