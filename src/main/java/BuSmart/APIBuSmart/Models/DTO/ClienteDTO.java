@@ -6,22 +6,25 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-@Getter @Setter
 @ToString @EqualsAndHashCode
+@Getter @Setter
 public class ClienteDTO {
     private int idCliente;
 
+    @Size(max = 100, message = "El nombre no debe superar los 100 caracteres")
     @NotBlank(message = "El nombre completo es obligatorio")
-    @Size(min = 3, max = 100, message = "El nombre debe tener entre 3 y 100 caracteres")
-    private String nombreComplete;
+    private String nombreCompleto;
 
     @NotBlank(message = "La dirección es obligatoria")
-    @Size(min = 5, max = 100, message = "La dirección debe tener entre 5 y 100 caracteres")
-    private String direction;
+    @Size(max = 100, message = "La dirección no debe superar los 100 caracteres")
+    private String direccion;
 
-    @Email(message = "El correo debe tener un formato válido")
+    @NotBlank(message = "El correo es obligatorio")
+    @Email(message = "Debe ser un correo válido")
+    @Size(max = 100, message = "El correo no debe superar los 100 caracteres")
     private String correo;
 
-    @Size(min = 8, message = "La contraseña debe tener al menos 8 caracteres")
+    @NotBlank(message = "La contraseña es obligatoria")
+    @Size(min = 8, max = 256, message = "La contraseña debe tener entre 8 y 256 caracteres")
     private String contrasenaCliente;
 }
