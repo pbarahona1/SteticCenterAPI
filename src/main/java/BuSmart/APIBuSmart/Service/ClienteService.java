@@ -123,6 +123,7 @@ public class ClienteService {
     }
 
 
+
     private ClienteDTO convertirADTO(ClienteEntity entity) {
         if (entity == null) return null;
 
