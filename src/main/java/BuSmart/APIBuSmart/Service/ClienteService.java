@@ -85,6 +85,7 @@ public class ClienteService {
         }
     }
 
+
     private ClienteDTO convertirAClienteDTO(ClienteEntity cliente) {
         ClienteDTO dto = new ClienteDTO();
         dto.setIdCliente(cliente.getIdCliente());
