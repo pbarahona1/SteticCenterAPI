@@ -1,8 +1,8 @@
 package BuSmart.APIBuSmart.Controllers;
 
-import BuSmart.APIBuSmart.Exceptions.ExcepCliente.*;
-import BuSmart.APIBuSmart.Models.DTO.ClienteDTO;
-import BuSmart.APIBuSmart.Service.ClienteService;
+import BuSmart.APIBuSmart.Exceptions.ExcepProducto.*;
+import BuSmart.APIBuSmart.Models.DTO.ProductoDTO;
+import BuSmart.APIBuSmart.Service.ProductoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,24 +10,23 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/clientes")
-public class ClienteController {
+@RequestMapping("/api/productos")
+public class ProductoController {
 
     @Autowired
-    private ClienteService clienteService;
+    private ProductoService productoService;
 
-    @GetMapping("/GetClientes")
-    public ResponseEntity<?> getAllClientes() {
+    @GetMapping("/GetProductos")
+    public ResponseEntity<?> getAllProductos() {
         try {
-            List<ClienteDTO> clientes = clienteService.getAllClientes();
-            return ResponseEntity.ok(clientes);
-        } catch (ExcepcionClienteNoRegistrado e) {
+            List<ProductoDTO> productos = productoService.getAllProductos();
+            return ResponseEntity.ok(productos);
+        } catch (ExcepcionProductoNoRegistrado e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of(
                     "status", "info",
                     "message", e.getMessage()
@@ -35,14 +34,14 @@ public class ClienteController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
                     "status", "error",
-                    "message", "Error al obtener clientes",
+                    "message", "Error al obtener productos",
                     "detail", e.getMessage()
             ));
         }
     }
 
-    @PostMapping("/PostClientes")
-    public ResponseEntity<?> createCliente(@Valid @RequestBody ClienteDTO clienteDTO, BindingResult bindingResult) {
+    @PostMapping("/PostProductos")
+    public ResponseEntity<?> createProducto(@Valid @RequestBody ProductoDTO productoDTO, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             Map<String, String> errores = new HashMap<>();
             bindingResult.getFieldErrors().forEach(error ->
@@ -51,17 +50,17 @@ public class ClienteController {
         }
 
         try {
-            ClienteDTO clienteCreado = clienteService.insertCliente(clienteDTO);
+            ProductoDTO productoCreado = productoService.insertProducto(productoDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
                     "status", "success",
-                    "data", clienteCreado));
-        } catch (ExcepcionClienteDuplicado e) {
+                    "data", productoCreado));
+        } catch (ExcepcionProductoDuplicado e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of(
                     "error", "Datos duplicados",
                     "campo", e.getCampoDuplicado(),
                     "message", e.getMessage()
             ));
-        } catch (ExcepcionClienteNoRegistrado e) {
+        } catch (ExcepcionProductoNoRegistrado e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
                     "status", "error",
                     "message", e.getMessage()
@@ -69,10 +68,10 @@ public class ClienteController {
         }
     }
 
-    @PutMapping("/PutClientes/{id}")
-    public ResponseEntity<?> updateCliente(
+    @PutMapping("/PutProductos/{id}")
+    public ResponseEntity<?> updateProducto(
             @PathVariable int id,
-            @Valid @RequestBody ClienteDTO clienteDTO,
+            @Valid @RequestBody ProductoDTO productoDTO,
             BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             Map<String, String> errores = new HashMap<>();
@@ -82,14 +81,14 @@ public class ClienteController {
         }
 
         try {
-            ClienteDTO clienteActualizado = clienteService.updateCliente(id, clienteDTO);
-            return ResponseEntity.ok(clienteActualizado);
-        } catch (ExcepcionClienteNoEncontrado e) {
+            ProductoDTO productoActualizado = productoService.updateProducto(id, productoDTO);
+            return ResponseEntity.ok(productoActualizado);
+        } catch (ExcepcionProductoNoEncontrado e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of(
                     "status", "error",
                     "message", e.getMessage()
             ));
-        } catch (ExcepcionClienteDuplicado e) {
+        } catch (ExcepcionProductoDuplicado e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of(
                     "error", "Datos duplicados",
                     "campo", e.getCampoDuplicado(),
@@ -98,31 +97,23 @@ public class ClienteController {
         }
     }
 
-    @DeleteMapping("/DeleteClientes/{id}")
-    public ResponseEntity<?> deleteCliente(@PathVariable int id) {
+    @DeleteMapping("/DeleteProductos/{id}")
+    public ResponseEntity<?> deleteProducto(@PathVariable int id) {
         try {
-            boolean eliminado = clienteService.deleteCliente(id);
-            if (eliminado) {
-                return ResponseEntity.ok().body(Map.of(
-                        "status", "success",
-                        "message", "Cliente eliminado exitosamente"
-                ));
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of(
-                        "status", "error",
-                        "message", "No se pudo eliminar el cliente"
-                ));
-            }
-        } catch (ExcepcionClienteNoEncontrado e) {
+            productoService.deleteProducto(id);
+            return ResponseEntity.ok().body(Map.of(
+                    "status", "success",
+                    "message", "Producto eliminado exitosamente"
+            ));
+        } catch (ExcepcionProductoNoEncontrado e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of(
                     "status", "error",
-                    "message", e.getMessage(),
-                    "timestamp", Instant.now().toString()
+                    "message", e.getMessage()
             ));
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(Map.of(
                     "status", "error",
-                    "message", "Error al eliminar cliente",
+                    "message", "Error al eliminar producto",
                     "detail", e.getMessage()
             ));
         }
