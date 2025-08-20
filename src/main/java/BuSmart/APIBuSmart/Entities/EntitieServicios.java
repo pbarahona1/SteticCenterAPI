@@ -11,6 +11,7 @@ import lombok.ToString;
 @Getter @Setter
 @EqualsAndHashCode @ToString
 public class EntitieServicios {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_Servicios")
     @SequenceGenerator(name = "seq_Servicios", sequenceName = "seq_Servicios", allocationSize = 1)

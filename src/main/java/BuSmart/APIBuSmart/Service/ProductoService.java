@@ -29,8 +29,8 @@ public class ProductoService {
                     .map(this::convertirAProductoDTO)
                     .collect(Collectors.toList());
         } catch (Exception e) {
-            log.error("Error al listar productos: " + e.getMessage(), e);
-            throw new ExcepcionProductoNoEncontrado("Error al listar productos: " + e.getMessage());
+            log.error("Error inesperado al listar productos", e);
+            throw e;
         }
     }
 

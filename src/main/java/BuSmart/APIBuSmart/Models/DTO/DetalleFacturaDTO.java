@@ -1,5 +1,6 @@
 package BuSmart.APIBuSmart.Models.DTO;
 
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Min;
@@ -8,6 +9,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+
+import java.math.BigDecimal;
 
 @ToString
 @EqualsAndHashCode
@@ -32,5 +35,7 @@ public class DetalleFacturaDTO {
 
     @NotNull(message = "El precio unitario no puede ser nulo")
     @DecimalMin(value = "0.00", inclusive = true, message = "El precio unitario debe ser mayor o igual a 0.00")
-    private int PrecioUnitario;
+    @Digits(integer = 8, fraction = 2)
+    @Column(precision = 10, scale = 2)
+    private BigDecimal PrecioUnitario;
 }

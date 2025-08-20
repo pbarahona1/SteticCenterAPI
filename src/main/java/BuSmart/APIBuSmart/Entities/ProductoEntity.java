@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "PRODUCTOS")
 @Getter @Setter @ToString @EqualsAndHashCode
@@ -21,7 +23,7 @@ public class ProductoEntity {
     private String nombre;
 
     @Column(name = "PRECIO", nullable = false, precision = 10, scale = 2)
-    private double precio;
+    private BigDecimal precio;
 
     @Column(name = "STOCK")
     private int stock = 0;

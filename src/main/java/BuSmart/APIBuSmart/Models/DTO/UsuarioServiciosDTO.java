@@ -11,8 +11,11 @@ import lombok.ToString;
 @EqualsAndHashCode
 public class UsuarioServiciosDTO {
 
+
     private Long idUsuarioServicio;
+
     private Long idUsuario;
+
     private Long idServicio;
 
 }
