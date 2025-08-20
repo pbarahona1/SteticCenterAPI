@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.math.BigDecimal;
+
 @ToString @EqualsAndHashCode
 @Getter @Setter
 public class ProductoDTO {
@@ -17,8 +19,8 @@ public class ProductoDTO {
 
     @DecimalMin(value = "0.01", message = "El precio debe ser mayor que 0")
     @Digits(integer = 8, fraction = 2, message = "El precio debe tener máximo 8 dígitos enteros y 2 decimales")
-    private double precio;
+    private BigDecimal precio;
 
     @Min(value = 0, message = "El stock no puede ser negativo")
-    private int stock = 0;
+    private int stock;
 }

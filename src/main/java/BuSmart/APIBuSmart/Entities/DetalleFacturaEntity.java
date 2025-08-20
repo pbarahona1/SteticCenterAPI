@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "DETALLEFACTURA")
 @Getter
@@ -32,5 +34,5 @@ public class DetalleFacturaEntity {
     private int Cantidad;
 
     @Column(name = "PRECIO_UNITARIO")
-    private int PrecioUnitario;
+    private BigDecimal PrecioUnitario;
 }
