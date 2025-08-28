@@ -1,5 +1,6 @@
 package BuSmart.APIBuSmart.Models.DTO;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -40,9 +41,11 @@ public class UserDTO {
     @Size(min = 8, max = 20, message = "La contraseña debe tener entre 8 y 50 caracteres")
     private String contrasena;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @Past(message = "La fecha de nacimiento debe ser en el pasado")
     @NotNull(message = "El nacimiento es obligatorio")
     private Date nacimiento;
+
 
     @NotBlank(message = "La direccion es obligatorio")
     private String direccion;

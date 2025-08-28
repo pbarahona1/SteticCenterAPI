@@ -25,14 +25,11 @@ public class FacturasService {
     @Autowired
     FacturasRepository repo;
     public List<FacturasDTO> getFacturas() {
-        try{
-            List<FacturasEntity> Facturas = repo.findAll();
-            return Facturas.stream()
-                    .map(this::ConvertirFacturasADTO)
-                    .collect(Collectors.toList());
-        } catch (Exception e){
-            log.error("error al lista facturas" + e.getMessage(), e);
-            throw new ExceptionFacturaNoEncotrada("error al listar Facturas: " + e.getMessage());
+        try {
+            List<FacturasEntity> factura = repo.findAll();
+            return factura.stream().map(this::ConvertirFacturasADTO).collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 

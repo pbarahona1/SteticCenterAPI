@@ -18,6 +18,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
+@CrossOrigin
 public class DetalleFacturaController {
     @Autowired
     DetalleFacturaService Service;

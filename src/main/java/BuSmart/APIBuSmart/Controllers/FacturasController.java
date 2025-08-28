@@ -23,7 +23,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
-
+@CrossOrigin
 
 public class FacturasController {
     @Autowired
@@ -51,7 +51,6 @@ public class FacturasController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
                     "status", "error",
                     "message", "error no controlado al registrar la Factura",
-                    "detail", "error no encontrado añ registrar la Factura",
                     "detail", e.getMessage()
             ));
         }

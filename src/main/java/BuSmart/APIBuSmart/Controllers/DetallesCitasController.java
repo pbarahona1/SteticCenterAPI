@@ -21,6 +21,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/ApiDetalleCitas")
+@CrossOrigin
 public class DetallesCitasController {
     @Autowired
     DetallesCitasService service;

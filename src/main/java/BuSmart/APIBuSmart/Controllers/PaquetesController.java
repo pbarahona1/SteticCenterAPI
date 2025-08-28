@@ -16,6 +16,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/paquetes")
+@CrossOrigin(origins = "http://localhost")
 public class PaquetesController {
 
     @Autowired

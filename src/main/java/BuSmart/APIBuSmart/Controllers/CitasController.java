@@ -19,6 +19,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/ApiCitas")
+@CrossOrigin
 public class    CitasController {
 
     @Autowired
@@ -48,7 +49,6 @@ public class    CitasController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
                     "status", "error",
                     "message", "error no controlado al registrar usuario",
-                    "detail", "error no encontrado añ registrar usuario",
                     "detail", e.getMessage()
             ));
         }
