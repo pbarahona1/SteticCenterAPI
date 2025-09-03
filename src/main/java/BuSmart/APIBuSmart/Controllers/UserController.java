@@ -7,6 +7,7 @@ import BuSmart.APIBuSmart.Service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -16,19 +17,37 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api")
-@CrossOrigin
+@RequestMapping("/api/Usuario")
+@CrossOrigin//Le faltaba el crossOrigin y el requestMaping solo decia "api"
 public class UserController {
 
     @Autowired
     UserService acceso;
 
     @GetMapping("/GetUsuarios")
-    public List<UserDTO> getUsuarios() {return  acceso.getAllUsers();}
+    public ResponseEntity<?> getUsuarios(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "8") int size
+    ) {
+        if (size <= 0 || size > 50) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "Status", "El tamaño de la página debe estar entre 1 y 50"
+            ));
+        }
+
+        Page<UserDTO> usuarios = acceso.getAllUsers(page, size);
+
+        if (usuarios.isEmpty()) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "Status", "No hay usuarios registrados"
+            ));
+        }
+
+        return ResponseEntity.ok(usuarios);
+    }
 
 
     @PostMapping("/PostUsuarios")
@@ -68,7 +87,7 @@ public class UserController {
     }
 
 
-    @PutMapping("PutUsuario/{id}")
+    @PutMapping("/PutUsuario/{id}")//Le faltaba una pleca
     public ResponseEntity<?> putUsuario(
             @PathVariable Long id,
             @Valid @RequestBody UserDTO usuario,
@@ -115,7 +134,7 @@ public class UserController {
                         .header("X-Mensage-Error", "Usuario no encontrado")
                         .body(Map.of(
                                 "error", "Not found",
-                                    "Mensaje error", "El usuario no ha sido encontrado",
+                                "Mensaje error", "El usuario no ha sido encontrado",
                                 "timestamp", Instant.now().toString()
                         ));
             }
@@ -126,7 +145,7 @@ public class UserController {
         }
         catch (Exception e){
             return ResponseEntity.internalServerError().body(Map.of(
-                "status", "Error",
+                    "status", "Error",
                     "message", "Error al eliminar Encargado",
                     "detail", e.getMessage()
             ));
