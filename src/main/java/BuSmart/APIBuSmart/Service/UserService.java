@@ -1,6 +1,7 @@
 package BuSmart.APIBuSmart.Service;
 
 import BuSmart.APIBuSmart.Entities.UserEntity;
+import BuSmart.APIBuSmart.Exceptions.ExcepUsuarios.ExcepcionDatosDuplicados;
 import BuSmart.APIBuSmart.Exceptions.ExcepUsuarios.ExceptionsUsuarioNoEncontrado;
 import BuSmart.APIBuSmart.Models.DTO.UserDTO;
 import BuSmart.APIBuSmart.Repositories.UserRepository;
@@ -38,13 +39,19 @@ public class UserService {
     }
 
 
-
     public UserDTO insertUser(@Valid UserDTO data){
+        if (repo.existsByUsuario(data.getUsuario())) {
+            throw new ExcepcionDatosDuplicados("usuario duplicado", "El nombre de usuario ya está en uso.");
+        }
+        if (repo.existsByDui(data.getDui())) {
+            throw new ExcepcionDatosDuplicados("dui duplicado", "El DUI ya está registrado.");
+        }
+
         try {
             UserEntity userEntity = convertirAUsuarioEntity(data);
             UserEntity usuarioGuardado = repo.save(userEntity);
             return convertirAUsuarioDTO(usuarioGuardado);
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("Error al registrar usuarios: " + e.getMessage());
             throw new ExceptionsUsuarioNoEncontrado("Error al registrar el usuario: " + e.getMessage());
         }

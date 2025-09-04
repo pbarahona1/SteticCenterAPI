@@ -65,24 +65,24 @@ public class UserController {
                         "message", "El usuario debe tener al menos 18 años"
                 ));
             }
+
             UserDTO respuesta = acceso.insertUser(json);
-            if (respuesta == null) {
-                return ResponseEntity.badRequest().body(Map.of(
-                        "status", "Inserción incorrecta",
-                        "errorType", "VALIDATION_ERROR",
-                        "message", "Datos del usuario inválidos"
-                ));
-            }
             return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
                     "status", "success",
                     "data", respuesta));
+
+        } catch (ExcepcionDatosDuplicados e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of(
+                    "status", "Duplicado",
+                    "campo", e.getCampoDuplicado(),
+                    "message", e.getMessage()
+            ));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of(
-                            "status", "error",
-                            "message", "Error al registrar usuario",
-                            "detail", e.getMessage()
-                    ));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+                    "status", "error",
+                    "message", "Error al registrar usuario",
+                    "detail", e.getMessage()
+            ));
         }
     }
 
