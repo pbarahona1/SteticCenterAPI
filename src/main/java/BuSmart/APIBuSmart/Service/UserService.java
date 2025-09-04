@@ -57,8 +57,21 @@ public class UserService {
         }
     }
 
-    public UserDTO actualizarUsuario(Long id, UserDTO usuario){
-        UserEntity usuarioExistente = repo.findById(id).orElseThrow(() -> new ExceptionsUsuarioNoEncontrado("Usuario no encontrado"));
+    public UserDTO actualizarUsuario(Long id, UserDTO usuario) {
+        UserEntity usuarioExistente = repo.findById(id)
+                .orElseThrow(() -> new ExceptionsUsuarioNoEncontrado("Usuario no encontrado"));
+
+        // Validar duplicados de usuario
+        if (repo.existsByUsuarioAndIdUsuarioNot(usuario.getUsuario(), id)) {
+            throw new ExcepcionDatosDuplicados("usuario duplicado", "El nombre de usuario ya está en uso.");
+        }
+
+        // Validar duplicados de DUI
+        if (repo.existsByDuiAndIdUsuarioNot(usuario.getDui(), id)) {
+            throw new ExcepcionDatosDuplicados("dui duplicado", "El DUI ya está registrado.");
+        }
+
+        // Actualizar campos
         usuarioExistente.setNombre(usuario.getNombre());
         usuarioExistente.setApellido(usuario.getApellido());
         usuarioExistente.setCorreo(usuario.getCorreo());
@@ -68,6 +81,7 @@ public class UserService {
         usuarioExistente.setContrasena(usuario.getContrasena());
         usuarioExistente.setNacimiento(usuario.getNacimiento());
         usuarioExistente.setDireccion(usuario.getDireccion());
+
         UserEntity usuarioActualizado = repo.save(usuarioExistente);
         return convertirAUsuarioDTO(usuarioActualizado);
     }

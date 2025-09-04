@@ -88,38 +88,40 @@ public class UserController {
 
 
     @PutMapping("/PutUsuario/{id}")//Le faltaba una pleca
-    public ResponseEntity<?> putUsuario(
+    public ResponseEntity<?> modificarUsuario(
             @PathVariable Long id,
-            @Valid @RequestBody UserDTO usuario,
-            BindingResult bindingResult){
-        if (bindingResult.hasErrors()){
+            @Valid @RequestBody UserDTO json,
+            BindingResult bindingResult
+    ) {
+        if (bindingResult.hasErrors()) {
             Map<String, String> errores = new HashMap<>();
             bindingResult.getFieldErrors().forEach(error ->
                     errores.put(error.getField(), error.getDefaultMessage()));
             return ResponseEntity.badRequest().body(errores);
         }
-        LocalDate fechaNacimiento = usuario.getNacimiento()
-                .toInstant()
-                .atZone(ZoneId.systemDefault())
-                .toLocalDate();
-
-        if (Period.between(fechaNacimiento, LocalDate.now()).getYears() < 18) {
-            return ResponseEntity.badRequest().body(Map.of(
-                    "status", "Validacion incorrecta",
-                    "errorType", "VALIDATION_ERROR",
-                    "message", "El usuario debe tener al menos 18 años"
-            ));
-        }
         try {
-            UserDTO usuarioActualizado = acceso.actualizarUsuario(id, usuario);
-            return ResponseEntity.ok(usuarioActualizado);
-        }
-        catch (ExceptionsUsuarioNoEncontrado e){
-            return ResponseEntity.notFound().build();
-        }
-        catch (ExcepcionDatosDuplicados e){
+            UserDTO dto = acceso.actualizarUsuario(id, json);
+            return ResponseEntity.ok(dto);
+        } catch (ExcepcionDatosDuplicados e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(
-                    Map.of("error", "Datos duplicados", "campo", e.getCampoDuplicado())
+                    Map.of(
+                            "Error", "Dato duplicado",
+                            "Campo", e.getMessage()
+                    )
+            );
+        } catch (ExceptionsUsuarioNoEncontrado e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    Map.of(
+                            "Error", "Usuario no encontrado",
+                            "Mensaje", e.getMessage()
+                    )
+            );
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                    Map.of(
+                            "Error", "Error inesperado",
+                            "Detalle", e.getMessage()
+                    )
             );
         }
     }
