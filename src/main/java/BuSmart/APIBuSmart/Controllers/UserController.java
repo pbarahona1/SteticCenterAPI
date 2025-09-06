@@ -154,5 +154,33 @@ public class UserController {
         }
     }
 
+    @GetMapping("/SearchUsuarios")
+    public ResponseEntity<?> searchUsuarios(
+            @RequestParam String filtro,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "8") int size
+    ) {
+        if (size <= 0 || size > 50) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "Status", "El tamaño de la página debe estar entre 1 y 50"
+            ));
+        }
 
+        try {
+            Page<UserDTO> usuarios = acceso.searchUsers(filtro, page, size);
+
+            if (usuarios.isEmpty()) {
+                return ResponseEntity.badRequest().body(Map.of(
+                        "Status", "No se encontraron usuarios que coincidan con la búsqueda"
+                ));
+            }
+
+            return ResponseEntity.ok(usuarios);
+        } catch (ExceptionsUsuarioNoEncontrado e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of(
+                    "Status", "Error",
+                    "Message", e.getMessage()
+            ));
+        }
+    }
 }

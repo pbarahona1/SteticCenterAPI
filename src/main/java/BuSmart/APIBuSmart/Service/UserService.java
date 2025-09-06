@@ -131,5 +131,16 @@ public class UserService {
         return usuario;
     }
 
+    public Page<UserDTO> searchUsers(String filtro, int page, int size) {
+        try {
+            Pageable pageable = PageRequest.of(page, size);
+            Page<UserEntity> usuarios = repo.searchUsers(filtro, pageable);
+            return usuarios.map(this::convertirAUsuarioDTO);
+        } catch (Exception e) {
+            log.error("Error al buscar usuarios: " + e.getMessage(), e);
+            throw new ExceptionsUsuarioNoEncontrado("Error al buscar usuarios: " + e.getMessage());
+        }
+    }
+
 
 }
