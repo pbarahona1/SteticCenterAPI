@@ -61,6 +61,7 @@ public class ProductoService {
         productoExistente.setNombre(productoDTO.getNombre());
         productoExistente.setPrecio(productoDTO.getPrecio());
         productoExistente.setStock(productoDTO.getStock());
+        productoExistente.setImgUrl(productoDTO.getImgUrl());
 
         ProductoEntity productoActualizado = productoRepository.save(productoExistente);
         return convertirAProductoDTO(productoActualizado);
@@ -83,6 +84,7 @@ public class ProductoService {
         dto.setNombre(producto.getNombre());
         dto.setPrecio(producto.getPrecio());
         dto.setStock(producto.getStock());
+        dto.setImgUrl(producto.getImgUrl());
         return dto;
     }
 
@@ -92,6 +94,7 @@ public class ProductoService {
         producto.setNombre(dto.getNombre());
         producto.setPrecio(dto.getPrecio());
         producto.setStock(dto.getStock());
+        producto.setImgUrl(dto.getImgUrl());
         return producto;
     }
 }

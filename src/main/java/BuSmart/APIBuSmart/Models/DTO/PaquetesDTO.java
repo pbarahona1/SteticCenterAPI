@@ -25,4 +25,7 @@ public class PaquetesDTO {
 
     @Size(max = 500, message = "La descripción no debe superar los 500 caracteres")
     private String descripcion;
+
+    @NotBlank(message = "no puede ser nulo")
+    private String imgUrl;
 }

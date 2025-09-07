@@ -28,4 +28,7 @@ public class PaquetesEntity {
 
     @Column(name = "DESCRIPCION", length = 500)
     private String descripcion;
+
+    @Column(name = "IMG_URL")
+    private String imgUrl;
 }
