@@ -143,4 +143,18 @@ public class UserService {
     }
 
 
+    public UserDTO login(String usuario, String contrasena) {
+        // Buscar usuario en BD
+        UserEntity user = repo.findByUsuario(usuario)
+                .orElseThrow(() -> new ExceptionsUsuarioNoEncontrado("Usuario no encontrado"));
+
+        // Validar contraseña
+        if (!user.getContrasena().equals(contrasena)) {
+            throw new RuntimeException("Contraseña incorrecta");
+        }
+
+        // Retornar DTO
+        return convertirAUsuarioDTO(user);
+    }
+
 }

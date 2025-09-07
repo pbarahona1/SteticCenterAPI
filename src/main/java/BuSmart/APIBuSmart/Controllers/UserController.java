@@ -1,5 +1,6 @@
 package BuSmart.APIBuSmart.Controllers;
 
+import BuSmart.APIBuSmart.Entities.UserEntity;
 import BuSmart.APIBuSmart.Exceptions.ExcepUsuarios.ExcepcionDatosDuplicados;
 import BuSmart.APIBuSmart.Exceptions.ExcepUsuarios.ExceptionsUsuarioNoEncontrado;
 import BuSmart.APIBuSmart.Models.DTO.UserDTO;
@@ -48,6 +49,32 @@ public class UserController {
 
         return ResponseEntity.ok(usuarios);
     }
+
+    @PostMapping("/Login")
+    public ResponseEntity<?> login(@RequestBody Map<String, String> credentials) {
+        try {
+            String usuario = credentials.get("usuario");
+            String contrasena = credentials.get("contrasena");
+
+            UserDTO dto = acceso.login(usuario, contrasena);
+
+            // ⚠️ Aquí puedes mapear el rol según idTipoUsuario
+            String rol = (dto.getIdTipoUsuario() == 1) ? "Administrador" : "Empleado";
+
+            return ResponseEntity.ok(Map.of(
+                    "idusuario", dto.getIdUsuario(),
+                    "usuario", dto.getUsuario(),
+                    "rol", rol
+            ));
+        } catch (ExceptionsUsuarioNoEncontrado e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("status", "error", "message", e.getMessage()));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("status", "error", "message", e.getMessage()));
+        }
+    }
+
 
 
     @PostMapping("/PostUsuarios")
