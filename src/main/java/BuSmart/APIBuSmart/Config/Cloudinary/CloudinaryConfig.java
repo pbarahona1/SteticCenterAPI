@@ -22,7 +22,7 @@ public class CloudinaryConfig {
         Map<String, String> config = new HashMap<>();
 
         config.put("cloud_name", dotenv.get("CLOUDINARY_CLOUD_NAME"));
-        config.put("Api_Key", dotenv.get("CLUDINARY_API_KEY"));
+        config.put("api_key", dotenv.get("CLUDINARY_API_KEY"));
         config.put("api_secret", dotenv.get("CLOUDINARY_API_SECRET"));
 
         return new Cloudinary(config);

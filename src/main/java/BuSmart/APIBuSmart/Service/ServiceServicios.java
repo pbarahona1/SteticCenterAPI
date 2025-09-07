@@ -60,7 +60,7 @@ public class ServiceServicios {
         entity.setNombre(data.getNombre());
         entity.setPrecio(data.getPrecio());
         entity.setDuracion_min(data.getDuracion_min());
-
+        entity.setImgUrl(data.getImgUrl());
 
         return entity;
     }
