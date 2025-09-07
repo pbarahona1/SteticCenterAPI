@@ -32,6 +32,8 @@ public class ServiceServicios {
         dto.setNombre(entitieServicios.getNombre());
         dto.setPrecio(entitieServicios.getPrecio());
         dto.setDuracion_min(entitieServicios.getDuracion_min());
+        dto.setImgUrl(entitieServicios.getImgUrl());
+        dto.setImgUrl(entitieServicios.getImgUrl());
 
         return dto;
 
@@ -59,6 +61,7 @@ public class ServiceServicios {
         entity.setPrecio(data.getPrecio());
         entity.setDuracion_min(data.getDuracion_min());
 
+
         return entity;
     }
 
@@ -69,6 +72,7 @@ public class ServiceServicios {
         existente.setNombre(json.getNombre());
         existente.setPrecio(json.getPrecio());
         existente.setDuracion_min(json.getDuracion_min());
+        existente.setImgUrl(json.getImgUrl());
 
         EntitieServicios ServicioActualizado = repo.save(existente);
         return ConvertirADTO(ServicioActualizado);

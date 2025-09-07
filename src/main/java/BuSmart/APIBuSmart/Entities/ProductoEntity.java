@@ -27,4 +27,7 @@ public class ProductoEntity {
 
     @Column(name = "STOCK")
     private int stock = 0;
+
+    @Column(name = "IMG_URL")
+    private String imgUrl;
 }

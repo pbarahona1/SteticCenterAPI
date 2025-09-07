@@ -66,6 +66,7 @@ public class PaquetesService {
             paquetesExistente.setNombre(paquetesDTO.getNombre());
             paquetesExistente.setPrecio(paquetesDTO.getPrecio());
             paquetesExistente.setDescripcion(paquetesDTO.getDescripcion());
+            paquetesExistente.setImgUrl(paquetesDTO.getImgUrl());
 
             PaquetesEntity paquetesActualizado = paquetesRepository.save(paquetesExistente);
             return convertirAPaquetesDTO(paquetesActualizado);
@@ -98,6 +99,7 @@ public class PaquetesService {
         dto.setNombre(paquetes.getNombre());
         dto.setPrecio(paquetes.getPrecio());
         dto.setDescripcion(paquetes.getDescripcion());
+        dto.setImgUrl(paquetes.getImgUrl());
         return dto;
     }
 
@@ -107,6 +109,7 @@ public class PaquetesService {
         paquetes.setNombre(dto.getNombre());
         paquetes.setPrecio(dto.getPrecio());
         paquetes.setDescripcion(dto.getDescripcion());
+        paquetes.setImgUrl(dto.getImgUrl());
         return paquetes;
     }
 }

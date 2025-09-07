@@ -27,4 +27,6 @@ public class ServiciosDTO {
     @Max(value = 1440, message = "La duración no puede exceder un día (1440 minutos)")
     private Long duracion_min;
 
+    @NotBlank(message = "no puede ser nulo")
+    private String imgUrl;
 }

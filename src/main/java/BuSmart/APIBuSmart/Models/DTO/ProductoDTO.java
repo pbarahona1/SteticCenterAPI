@@ -23,4 +23,7 @@ public class ProductoDTO {
 
     @Min(value = 0, message = "El stock no puede ser negativo")
     private int stock;
+
+    @NotBlank(message = "no puede ser nulo")
+    private String imgUrl;
 }

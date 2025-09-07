@@ -26,4 +26,7 @@ public class EntitieServicios {
 
     @Column(name = "duracion_min")
     private Long duracion_min;
+
+    @Column(name = "IMG_URL")
+    private String imgUrl;
 }
