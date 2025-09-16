@@ -5,12 +5,16 @@ import BuSmart.APIBuSmart.Exceptions.ExcepCitas.ExcepcionCitasDuplicadas;
 import BuSmart.APIBuSmart.Exceptions.ExcepCitas.ExceptionCitaNoEncontrada;
 import BuSmart.APIBuSmart.Exceptions.ExcepUsuarios.ExceptionEncargadoNoEncontrado;
 import BuSmart.APIBuSmart.Exceptions.ExcepUsuarios.ExceptionEncargadoNoRegistrado;
+import BuSmart.APIBuSmart.Exceptions.ExcepUsuarios.ExceptionsUsuarioNoEncontrado;
 import BuSmart.APIBuSmart.Models.DTO.CitasDTO;
 import BuSmart.APIBuSmart.Repositories.CitasRepository;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,6 +32,20 @@ public class CitasService {
         return lista.stream()
                 .map(this::ConvertirADTO)
                 .collect(Collectors.toList());
+    }
+
+    /*Paginada*/
+    public Page<CitasDTO> getAllUsers(int page, int size) {
+        try {
+            Pageable pageable = PageRequest.of(page, size);
+            Page<CitasEntity> cita = repocita.findAll(pageable);
+
+            return cita.map(this::ConvertirADTO);
+
+        } catch (Exception e) {
+            log.error("Error al listar citas: " + e.getMessage(), e);
+            throw new ExceptionCitaNoEncontrada("Error al listar citas: " + e.getMessage());
+        }
     }
 
     public CitasDTO insertarCitas(@Valid CitasDTO json) {

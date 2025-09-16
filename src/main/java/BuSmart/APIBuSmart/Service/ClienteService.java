@@ -1,12 +1,18 @@
 package BuSmart.APIBuSmart.Service;
 
 import BuSmart.APIBuSmart.Entities.ClienteEntity;
+import BuSmart.APIBuSmart.Entities.UserEntity;
 import BuSmart.APIBuSmart.Exceptions.ExcepCliente.*;
+import BuSmart.APIBuSmart.Exceptions.ExcepUsuarios.ExceptionsUsuarioNoEncontrado;
 import BuSmart.APIBuSmart.Models.DTO.ClienteDTO;
+import BuSmart.APIBuSmart.Models.DTO.UserDTO;
 import BuSmart.APIBuSmart.Repositories.ClienteRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,6 +36,19 @@ public class ClienteService {
                     .collect(Collectors.toList());
         } catch (ExcepcionClienteNoRegistrado e) {
             throw e;
+        } catch (Exception e) {
+            log.error("Error al listar clientes: " + e.getMessage(), e);
+            throw new ExcepcionClienteNoEncontrado("Error al listar clientes: " + e.getMessage());
+        }
+    }
+
+    public Page<ClienteDTO> getAllClientesPaginados(int page, int size) {
+        try {
+            Pageable pageable = PageRequest.of(page, size);
+            Page<ClienteEntity> clientes = clienteRepository.findAll(pageable);
+
+            return clientes.map(this::convertirAClienteDTO);
+
         } catch (Exception e) {
             log.error("Error al listar clientes: " + e.getMessage(), e);
             throw new ExcepcionClienteNoEncontrado("Error al listar clientes: " + e.getMessage());
