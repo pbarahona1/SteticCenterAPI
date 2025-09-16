@@ -11,6 +11,7 @@ import BuSmart.APIBuSmart.Service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -31,6 +32,28 @@ public class FacturasController {
 
     @GetMapping("/GetFacturas")
     public List<FacturasDTO> getFacturas(){return Service.getFacturas(); }
+
+    @GetMapping("/GetFacturasPaginadas")
+    public ResponseEntity<?> getfacturaspaginadas(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "8") int size
+    ) {
+        if (size <= 0 || size > 50) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "Status", "El tamaño de la página debe estar entre 1 y 50"
+            ));
+        }
+
+        Page<FacturasDTO> facturas = Service.getallFacturas(page, size);
+
+        if (facturas.isEmpty()) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "Status", "No hay facturas registradas"
+            ));
+        }
+
+        return ResponseEntity.ok(facturas);
+    }
 
     @PostMapping("/newFactura")
     public ResponseEntity<?> postFactura(@Valid @RequestBody FacturasDTO json, HttpServletRequest request){

@@ -2,9 +2,12 @@ package BuSmart.APIBuSmart.Controllers;
 
 import BuSmart.APIBuSmart.Exceptions.ExcepProducto.*;
 import BuSmart.APIBuSmart.Models.DTO.ProductoDTO;
+import BuSmart.APIBuSmart.Models.DTO.UserDTO;
 import BuSmart.APIBuSmart.Service.ProductoService;
 import jakarta.validation.Valid;
+import org.aspectj.weaver.patterns.DeclareTypeErrorOrWarning;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -39,6 +42,29 @@ public class ProductoController {
                     "detail", e.getMessage()
             ));
         }
+    }
+
+    /*Paginado*/
+    @GetMapping("/GetProductosPaginado")
+    public ResponseEntity<?> getProductosPaginado(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "8") int size
+    ) {
+        if (size <= 0 || size > 50) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "Status", "El tamaño de la página debe estar entre 1 y 50"
+            ));
+        }
+
+        Page<ProductoDTO> producto = productoService.getAllProductosPaginados(page, size);
+
+        if (producto.isEmpty()) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "Status", "No hay productos registrados"
+            ));
+        }
+
+        return ResponseEntity.ok(producto);
     }
 
     @PostMapping("/PostProductos")

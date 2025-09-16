@@ -1,12 +1,18 @@
 package BuSmart.APIBuSmart.Service;
 
 import BuSmart.APIBuSmart.Entities.ProductoEntity;
+import BuSmart.APIBuSmart.Entities.UserEntity;
 import BuSmart.APIBuSmart.Exceptions.ExcepProducto.*;
+import BuSmart.APIBuSmart.Exceptions.ExcepUsuarios.ExceptionsUsuarioNoEncontrado;
 import BuSmart.APIBuSmart.Models.DTO.ProductoDTO;
+import BuSmart.APIBuSmart.Models.DTO.UserDTO;
 import BuSmart.APIBuSmart.Repositories.ProductoRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,6 +37,20 @@ public class ProductoService {
         } catch (Exception e) {
             log.error("Error inesperado al listar productos", e);
             throw e;
+        }
+    }
+
+    /*paginado*/
+    public Page<ProductoDTO> getAllProductosPaginados(int page, int size) {
+        try {
+            Pageable pageable = PageRequest.of(page, size);
+            Page<ProductoEntity> productos = productoRepository.findAll(pageable);
+
+            return productos.map(this::convertirAProductoDTO);
+
+        } catch (Exception e) {
+            log.error("Error al listar productos: " + e.getMessage(), e);
+            throw new ExcepcionProductoNoEncontrado("Error al listar productos: " + e.getMessage());
         }
     }
 

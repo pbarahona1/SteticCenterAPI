@@ -1,10 +1,17 @@
 package BuSmart.APIBuSmart.Controllers;
 
+import BuSmart.APIBuSmart.Entities.EntitieServicios;
+import BuSmart.APIBuSmart.Entities.UserEntity;
+import BuSmart.APIBuSmart.Exceptions.ExcepUsuarios.ExceptionsUsuarioNoEncontrado;
 import BuSmart.APIBuSmart.Models.DTO.ServiciosDTO;
+import BuSmart.APIBuSmart.Models.DTO.UserDTO;
 import BuSmart.APIBuSmart.Service.ServiceServicios;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -25,6 +32,28 @@ public class ControllerServicios {
 
     @GetMapping("/ConsultarServicios")
     public List<ServiciosDTO> obtenerDatos(){return service.ObtenerServicios();}
+
+    /*Paginado*/
+    @GetMapping("/GetServiciosPaginados")
+    public ResponseEntity<?> getallserviciospaginados(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "8") int size
+    ) {
+        if (size <= 0 || size > 50) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "Status", "El tamaño de la página debe estar entre 1 y 50"
+            ));
+        }
+
+        Page<ServiciosDTO> servicios = service.getAllServiciosPaginado(page, size);
+
+        if (servicios.isEmpty()) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "Status", "No hay servicios registrados"
+            ));
+        }
+        return ResponseEntity.ok(servicios);
+    }
 
     @PostMapping("/IngresarServicios")
     public ResponseEntity<?> nuevoServicio(@Valid @RequestBody ServiciosDTO json, HttpServletRequest request){

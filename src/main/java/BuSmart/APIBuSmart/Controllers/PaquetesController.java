@@ -2,9 +2,11 @@ package BuSmart.APIBuSmart.Controllers;
 
 import BuSmart.APIBuSmart.Exceptions.ExcepPaquetes.*;
 import BuSmart.APIBuSmart.Models.DTO.PaquetesDTO;
+import BuSmart.APIBuSmart.Models.DTO.UserDTO;
 import BuSmart.APIBuSmart.Service.PaquetesService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -15,8 +17,8 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/paquetes")
-@CrossOrigin(origins = "http://localhost")
+    @RequestMapping("/api/paquetes")
+@CrossOrigin(origins = "*")
 public class PaquetesController {
 
     @Autowired
@@ -36,6 +38,29 @@ public class PaquetesController {
                     Map.of("error", "Error al obtener paquetes")
             );
         }
+    }
+
+    /*paginado*/
+    @GetMapping("/GetPaquetesPaginado")
+    public ResponseEntity<?> getPaquetesPaginados(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "8") int size
+    ) {
+        if (size <= 0 || size > 50) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "Status", "El tamaño de la página debe estar entre 1 y 50"
+            ));
+        }
+
+        Page<PaquetesDTO> paquetes = paquetesService.getAllPaquetesPaginado(page, size);
+
+        if (paquetes.isEmpty()) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "Status", "No hay paquetes registrados"
+            ));
+        }
+
+        return ResponseEntity.ok(paquetes);
     }
 
     @PostMapping("/PostPaquetes")

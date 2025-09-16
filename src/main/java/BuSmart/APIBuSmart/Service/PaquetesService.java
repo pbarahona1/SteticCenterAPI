@@ -1,12 +1,18 @@
 package BuSmart.APIBuSmart.Service;
 
 import BuSmart.APIBuSmart.Entities.PaquetesEntity;
+import BuSmart.APIBuSmart.Entities.UserEntity;
 import BuSmart.APIBuSmart.Exceptions.ExcepPaquetes.*;
+import BuSmart.APIBuSmart.Exceptions.ExcepUsuarios.ExceptionsUsuarioNoEncontrado;
 import BuSmart.APIBuSmart.Models.DTO.PaquetesDTO;
+import BuSmart.APIBuSmart.Models.DTO.UserDTO;
 import BuSmart.APIBuSmart.Repositories.PaquetesRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -32,6 +38,20 @@ public class PaquetesService {
         } catch (Exception e) {
             log.error("Error al listar paquetes", e);
             throw new ExcepcionPaquetesNoEncontrado("Error al obtener la lista de paquetes");
+        }
+    }
+
+    /*paginado*/
+    public Page<PaquetesDTO> getAllPaquetesPaginado(int page, int size) {
+        try {
+            Pageable pageable = PageRequest.of(page, size);
+            Page<PaquetesEntity> paquetes = paquetesRepository.findAll(pageable);
+
+            return paquetes.map(this::convertirAPaquetesDTO);
+
+        } catch (Exception e) {
+            log.error("Error al listar paquetes: " + e.getMessage(), e);
+            throw new ExcepcionPaquetesNoEncontrado("Error al listar paquetes: " + e.getMessage());
         }
     }
 

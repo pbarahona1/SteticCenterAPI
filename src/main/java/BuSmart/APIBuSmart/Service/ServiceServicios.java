@@ -1,6 +1,7 @@
 package BuSmart.APIBuSmart.Service;
 
 import BuSmart.APIBuSmart.Entities.EntitieServicios;
+import BuSmart.APIBuSmart.Exceptions.ExcepUsuarios.ExceptionsUsuarioNoEncontrado;
 import BuSmart.APIBuSmart.Exceptions.ExceptionsServicios.ExceptionServicioNoRegistrado;
 import BuSmart.APIBuSmart.Exceptions.ExceptionsServicios.ExceptionServiciosNoEncontrado;
 import BuSmart.APIBuSmart.Models.DTO.ServiciosDTO;
@@ -9,6 +10,9 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,6 +27,20 @@ public class ServiceServicios {
     public List<ServiciosDTO> ObtenerServicios(){
         List<EntitieServicios> Servicios = repo.findAll();
         return Servicios.stream().map(this::ConvertirADTO).collect(Collectors.toList());
+    }
+
+    /*paginado*/
+    public Page<ServiciosDTO> getAllServiciosPaginado(int page, int size) {
+        try {
+            Pageable pageable = PageRequest.of(page, size);
+            Page<EntitieServicios> servicios = repo.findAll(pageable);
+
+            return servicios.map(this::ConvertirADTO);
+
+        } catch (Exception e) {
+            log.error("Error al listar servicios: " + e.getMessage(), e);
+            throw new ExceptionServiciosNoEncontrado("Error al listar servicios: " + e.getMessage());
+        }
     }
 
     public ServiciosDTO ConvertirADTO(EntitieServicios entitieServicios){

@@ -6,6 +6,7 @@ import BuSmart.APIBuSmart.Entities.UserEntity;
 import BuSmart.APIBuSmart.Exceptions.ExcepCitas.ExceptionCitaNoEncontrada;
 import BuSmart.APIBuSmart.Exceptions.ExcepFacrturas.ExceptionFacturaNoEncotrada;
 import BuSmart.APIBuSmart.Exceptions.ExcepFacrturas.ExceptionFacturaNoRegistrada;
+import BuSmart.APIBuSmart.Exceptions.ExcepUsuarios.ExceptionsUsuarioNoEncontrado;
 import BuSmart.APIBuSmart.Models.DTO.FacturasDTO;
 import BuSmart.APIBuSmart.Models.DTO.UserDTO;
 import BuSmart.APIBuSmart.Repositories.FacturasRepository;
@@ -13,6 +14,9 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,6 +36,21 @@ public class FacturasService {
             throw new RuntimeException(e);
         }
     }
+
+    /*Paginacion*/
+    public Page<FacturasDTO> getallFacturas(int page, int size) {
+        try {
+            Pageable pageable = PageRequest.of(page, size);
+            Page<FacturasEntity> productos = repo.findAll(pageable);
+
+            return productos.map(this::ConvertirFacturasADTO);
+
+        } catch (Exception e) {
+            log.error("Error al listar facturas: " + e.getMessage(), e);
+            throw new ExceptionFacturaNoEncotrada("Error al listar facturas: " + e.getMessage());
+        }
+    }
+
 
     public FacturasDTO insertFactura(@Valid FacturasDTO json) {
             if(json == null){
