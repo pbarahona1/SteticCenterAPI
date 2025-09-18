@@ -1,13 +1,20 @@
 package BuSmart.APIBuSmart.Models.DTO;
 
+import BuSmart.APIBuSmart.Entities.UserEntity;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @ToString @EqualsAndHashCode
 @Getter @Setter
@@ -15,10 +22,9 @@ public class UserDTO {
     private Long idUsuario;
 
     @Size(max = 100, message = "El nombre no debe superar los 100 caracteres")
-    @NotBlank(message = "El nombre es obligatorio")
     private String nombre;
 
-    @NotBlank(message = "El nombre es obligatorio")
+
     private String apellido;
 
     @NotBlank(message = "El correo es obligatorio")
@@ -27,14 +33,11 @@ public class UserDTO {
 
     //se usa para validar el formato del DUI(Ocho dígitos numéricos (del 0 al 9))
     @Pattern(regexp = "^\\d{8}-\\d$", message = "El formato del DUI debe ser ########-#")
-    @NotBlank(message = "El dui debe de ser valido")
     private String dui;
 
-    @NotNull(message = "El tipo de usuario debe de ser valido")
     private int idTipoUsuario;
 
     @Size(max = 30, message = "El usuario no debe superar los 50 caracteres")
-    @NotBlank(message = "El usuario es obligatorio")
     private String usuario ;
 
     @NotBlank(message = "La contraseña es obligatoria")
@@ -43,11 +46,15 @@ public class UserDTO {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @Past(message = "La fecha de nacimiento debe ser en el pasado")
-    @NotNull(message = "El nacimiento es obligatorio")
     private Date nacimiento;
 
 
-    @NotBlank(message = "La direccion es obligatorio")
     private String direccion;
+
+    @OneToMany(mappedBy = "idTipoUsuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<UserEntity> usuarios = new ArrayList<>();
+
+
 
 }

@@ -1,16 +1,16 @@
 package BuSmart.APIBuSmart.Entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-
 import java.util.Date;
 
 @Entity
 @Table(name = "USUARIOS")
-@Getter @Setter @ToString @EqualsAndHashCode
+@Getter @Setter @EqualsAndHashCode
 public class UserEntity {
 
     @Id
@@ -31,8 +31,10 @@ public class UserEntity {
     @Column(name = "DUI")
     private String dui;
 
-    @Column(name = "IDTIPOUSUARIO")
-    private int idTipoUsuario;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "IDTIPOUSUARIO", referencedColumnName = "IDTIPOUSUARIO")
+    private TipoUsuarioEntity TipoUsuario;
 
     @Column(name = "USUARIO")
     private String usuario;
@@ -45,4 +47,20 @@ public class UserEntity {
 
     @Column(name = "DIRECCION")
     private String direccion;
+
+    @Override
+    public String toString() {
+        return "UserEntity{" +
+                "idUsuario=" + idUsuario +
+                ", nombre='" + nombre + '\'' +
+                ", apellido='" + apellido + '\'' +
+                ", correo='" + correo + '\'' +
+                ", dui='" + dui + '\'' +
+                ", TipoUsuario=" + TipoUsuario +
+                ", usuario='" + usuario + '\'' +
+                ", contrasena='" + contrasena + '\'' +
+                ", nacimiento=" + nacimiento +
+                ", direccion='" + direccion + '\'' +
+                '}';
+    }
 }
