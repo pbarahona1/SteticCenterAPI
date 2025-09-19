@@ -23,7 +23,6 @@ public class CitasDTO {
     private Integer idHorario;
 
     @NotNull(message = "La fecha de la cita es obligatoria")
-    @FutureOrPresent(message = "La fecha debe ser hoy o futura")
     private Date fecha_cita;
 
     @NotBlank(message = "El estado de la cita es obligatorio")

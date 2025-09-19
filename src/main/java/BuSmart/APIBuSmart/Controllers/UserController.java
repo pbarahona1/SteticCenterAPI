@@ -1,9 +1,14 @@
 package BuSmart.APIBuSmart.Controllers;
 
+import BuSmart.APIBuSmart.Entities.ClienteEntity;
 import BuSmart.APIBuSmart.Entities.UserEntity;
+import BuSmart.APIBuSmart.Exceptions.ExcepCliente.ExcepcionClienteNoEncontrado;
+import BuSmart.APIBuSmart.Exceptions.ExcepCliente.ExcepcionClienteNoRegistrado;
 import BuSmart.APIBuSmart.Exceptions.ExcepUsuarios.ExcepcionDatosDuplicados;
 import BuSmart.APIBuSmart.Exceptions.ExcepUsuarios.ExceptionsUsuarioNoEncontrado;
+import BuSmart.APIBuSmart.Models.DTO.ClienteDTO;
 import BuSmart.APIBuSmart.Models.DTO.UserDTO;
+import BuSmart.APIBuSmart.Repositories.UserRepository;
 import BuSmart.APIBuSmart.Service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -18,7 +23,9 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/Usuario")
@@ -27,6 +34,25 @@ public class UserController {
 
     @Autowired
     UserService acceso;
+
+    @GetMapping("/GetUsers")
+    public ResponseEntity<?> getAllUsersSinpaginar() {
+        try {
+            List<UserDTO> usuarios = acceso.getAllUsersNoPaginado();
+            return ResponseEntity.ok(usuarios);
+        } catch (ExceptionsUsuarioNoEncontrado e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of(
+                    "status", "info",
+                    "message", e.getMessage()
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+                    "status", "error",
+                    "message", "Error al obtener usuarios",
+                    "detail", e.getMessage()
+            ));
+        }
+    }
 
     @GetMapping("/GetUsuarios")
     public ResponseEntity<?> getUsuarios(

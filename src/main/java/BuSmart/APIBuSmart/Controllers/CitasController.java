@@ -2,6 +2,8 @@ package BuSmart.APIBuSmart.Controllers;
 
 import BuSmart.APIBuSmart.Entities.CitasEntity;
 import BuSmart.APIBuSmart.Entities.UserEntity;
+import BuSmart.APIBuSmart.Exceptions.ExcepCitas.ExceptionCitaNoEncontrada;
+import BuSmart.APIBuSmart.Exceptions.ExcepCliente.ExcepcionClienteNoEncontrado;
 import BuSmart.APIBuSmart.Exceptions.ExcepUsuarios.ExcepcionEncargadoDuplicados;
 import BuSmart.APIBuSmart.Exceptions.ExcepUsuarios.ExceptionEncargadoNoEncontrado;
 import BuSmart.APIBuSmart.Exceptions.ExcepUsuarios.ExceptionsUsuarioNoEncontrado;
@@ -113,28 +115,33 @@ public class    CitasController {
     }
 
     @DeleteMapping("/DeleteCitas/{id}")
-    public ResponseEntity<?> eliminarEncargado(@PathVariable long id){
-        try{
-
-            if (servicecita.removerCitas(id)) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .header("X-Mensage-Error", "Encargado no encontrado")
-                        .body(Map.of(
-                                "error", "Not found",
-                                "Mensaje error", "El Encargado no ha sido encontrado",
-                                "timestamp", Instant.now().toString()
-                        ));
+    public ResponseEntity<?> deleteCitasArreglado(@PathVariable int id) {
+        try {
+            boolean eliminado = servicecita.removerCitas(id);
+            if (eliminado) {
+                return ResponseEntity.ok().body(Map.of(
+                        "status", "success",
+                        "message", "Cita eliminada exitosamente"
+                ));
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of(
+                        "status", "error",
+                        "message", "No se pudo eliminar la cita"
+                ));
             }
-            return ResponseEntity.ok().body(Map.of(
-                    "status", "Proceso completado",
-                    "message", "Encargado eliminado exitosamente"
+        } catch (ExceptionCitaNoEncontrada e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of(
+                    "status", "error",
+                    "message", e.getMessage(),
+                    "timestamp", Instant.now().toString()
             ));
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.internalServerError().body(Map.of(
-                    "status", "Error",
-                    "message", "Error al eliminar Encargado",
+                    "status", "error",
+                    "message", "Error al eliminar cita",
                     "detail", e.getMessage()
             ));
         }
     }
+
 }

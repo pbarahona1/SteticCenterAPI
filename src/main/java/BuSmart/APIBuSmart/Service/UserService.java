@@ -1,8 +1,13 @@
 package BuSmart.APIBuSmart.Service;
 
+import BuSmart.APIBuSmart.Entities.ProductoEntity;
 import BuSmart.APIBuSmart.Entities.UserEntity;
+import BuSmart.APIBuSmart.Exceptions.ExcepCliente.ExcepcionClienteNoEncontrado;
+import BuSmart.APIBuSmart.Exceptions.ExcepCliente.ExcepcionClienteNoRegistrado;
+import BuSmart.APIBuSmart.Exceptions.ExcepProducto.ExcepcionProductoNoRegistrado;
 import BuSmart.APIBuSmart.Exceptions.ExcepUsuarios.ExcepcionDatosDuplicados;
 import BuSmart.APIBuSmart.Exceptions.ExcepUsuarios.ExceptionsUsuarioNoEncontrado;
+import BuSmart.APIBuSmart.Models.DTO.ProductoDTO;
 import BuSmart.APIBuSmart.Models.DTO.UserDTO;
 import BuSmart.APIBuSmart.Repositories.UserRepository;
 import jakarta.validation.Valid;
@@ -24,6 +29,21 @@ public class UserService {
 
     @Autowired
     UserRepository repo;
+
+    public List<UserDTO> getAllUsersNoPaginado() {
+        try {
+            List<UserEntity> usuarios = repo.findAll();
+            if (usuarios.isEmpty()) {
+                throw new ExceptionsUsuarioNoEncontrado("No hay usuarios registrados en el sistema");
+            }
+            return usuarios.stream()
+                    .map(this::convertirAUsuarioDTO)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            log.error("Error inesperado al listar usuarios", e);
+            throw e;
+        }
+    }
 
     public Page<UserDTO> getAllUsers(int page, int size) {
         try {
