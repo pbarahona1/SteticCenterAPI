@@ -5,7 +5,7 @@ import lombok.*;
 
 @Entity
 @Table(name = "TIPOUSUARIO") // Nombre exacto de la tabla en DB
-@Getter @Setter @ToString @EqualsAndHashCode
+@Getter @Setter @EqualsAndHashCode
 public class TipoUsuarioEntity {
 
     @Id
@@ -17,4 +17,11 @@ public class TipoUsuarioEntity {
     @Column(name = "NOMBRETIPO")
     private String nombreTipo;
 
+    @Override
+    public String toString() {
+        return "TipoUsuarioEntity{" +
+                "idTipoUsuario=" + idTipoUsuario +
+                ", nombreTipo='" + nombreTipo + '\'' +
+                '}';
+    }
 }

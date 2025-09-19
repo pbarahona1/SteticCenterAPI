@@ -1,14 +1,22 @@
 package BuSmart.APIBuSmart.Service;
 
+<<<<<<< HEAD
 import BuSmart.APIBuSmart.Entities.ProductoEntity;
 import BuSmart.APIBuSmart.Entities.UserEntity;
 import BuSmart.APIBuSmart.Exceptions.ExcepCliente.ExcepcionClienteNoEncontrado;
 import BuSmart.APIBuSmart.Exceptions.ExcepCliente.ExcepcionClienteNoRegistrado;
 import BuSmart.APIBuSmart.Exceptions.ExcepProducto.ExcepcionProductoNoRegistrado;
+=======
+import BuSmart.APIBuSmart.Config.Argon2.Argon2Password;
+import BuSmart.APIBuSmart.Entities.TipoUsuarioEntity;
+import BuSmart.APIBuSmart.Entities.UserEntity;
+import BuSmart.APIBuSmart.Exceptions.ExcepUsuarioServicios.ExceptionUsuarioServiciosNoEncontrado;
+>>>>>>> 05f27dfc5e215097bcb363618850f4e2fb1548b1
 import BuSmart.APIBuSmart.Exceptions.ExcepUsuarios.ExcepcionDatosDuplicados;
 import BuSmart.APIBuSmart.Exceptions.ExcepUsuarios.ExceptionsUsuarioNoEncontrado;
 import BuSmart.APIBuSmart.Models.DTO.ProductoDTO;
 import BuSmart.APIBuSmart.Models.DTO.UserDTO;
+import BuSmart.APIBuSmart.Repositories.TipoUsuarioRepository;
 import BuSmart.APIBuSmart.Repositories.UserRepository;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +36,12 @@ public class UserService {
 
 
     @Autowired
-    UserRepository repo;
+    private UserRepository repo;
+    @Autowired
+    private TipoUsuarioRepository repoTipo;
+    @Autowired
+    private Argon2Password Argon2;
+
 
     public List<UserDTO> getAllUsersNoPaginado() {
         try {
@@ -96,12 +109,17 @@ public class UserService {
         usuarioExistente.setApellido(usuario.getApellido());
         usuarioExistente.setCorreo(usuario.getCorreo());
         usuarioExistente.setDui(usuario.getDui());
-        usuarioExistente.setIdTipoUsuario(usuario.getIdTipoUsuario());
         usuarioExistente.setUsuario(usuario.getUsuario());
         usuarioExistente.setContrasena(usuario.getContrasena());
         usuarioExistente.setNacimiento(usuario.getNacimiento());
         usuarioExistente.setDireccion(usuario.getDireccion());
-
+        if (usuarioExistente.getTipoUsuario() != null){
+            TipoUsuarioEntity tipoUsuario = repoTipo.findById((long) usuario.getIdTipoUsuario())
+                    .orElseThrow(()-> new ExceptionUsuarioServiciosNoEncontrado("Tipo de usuario no encontrado"));
+            usuarioExistente.setTipoUsuario(tipoUsuario);
+        }else {
+            usuarioExistente.setTipoUsuario(null);
+        }
         UserEntity usuarioActualizado = repo.save(usuarioExistente);
         return convertirAUsuarioDTO(usuarioActualizado);
     }
@@ -128,11 +146,17 @@ public class UserService {
         dto.setApellido(usuario.getApellido());
         dto.setCorreo(usuario.getCorreo());
         dto.setDui(usuario.getDui());
-        dto.setIdTipoUsuario(usuario.getIdTipoUsuario());
         dto.setUsuario(usuario.getUsuario());
         dto.setContrasena(usuario.getContrasena());
         dto.setNacimiento(usuario.getNacimiento());
         dto.setDireccion(usuario.getDireccion());
+        if (usuario.getTipoUsuario() != null){
+            dto.setIdTipoUsuario(Math.toIntExact(usuario.getTipoUsuario().getIdTipoUsuario()));
+            dto.setNombre(usuario.getTipoUsuario().getNombreTipo());
+        }else{
+            dto.setNombre("Sin tipo de usuario asignado");
+            dto.setIdUsuario(null);
+        }
         return dto;
     }
 
@@ -143,11 +167,15 @@ public class UserService {
         usuario.setApellido(dto.getApellido());
         usuario.setCorreo(dto.getCorreo());
         usuario.setDui(dto.getDui());
-        usuario.setIdTipoUsuario(dto.getIdTipoUsuario());
         usuario.setUsuario(dto.getUsuario());
         usuario.setContrasena(dto.getContrasena());
         usuario.setNacimiento(dto.getNacimiento());
         usuario.setDireccion(dto.getDireccion());
+        if(dto.getIdUsuario() != null){
+            TipoUsuarioEntity entity = repoTipo.findById((long) dto.getIdTipoUsuario())
+                    .orElseThrow(()-> new ExceptionUsuarioServiciosNoEncontrado("el id de tipo de usuario no encontrado"));
+            usuario.setTipoUsuario(entity);
+        }
         return usuario;
     }
 
